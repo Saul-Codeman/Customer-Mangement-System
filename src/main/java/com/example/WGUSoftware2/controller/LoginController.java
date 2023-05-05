@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.time.ZoneId;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class LoginController {
+public class LoginController implements Initializable {
 
     @FXML
     private Label errorLabel;
@@ -57,7 +58,6 @@ public class LoginController {
     public void handleLogin(ActionEvent event) throws IOException {
         String username = usernameField.getText();
         String password = passwordField.getText();
-        Library.switchScreen(event, Library.dashboardUrl);
         // If the username and password match a specific database user
         /* if (Database.validateCredentials(username, password)){
             LoginLogger.log(username, true);
@@ -69,11 +69,21 @@ public class LoginController {
             errorLabel.setText("Invalid username or password");
         }
          */
+        Library.switchScreen(event, Library.dashboardUrl);
     }
     @FXML
     void languageHandler(ActionEvent event) {
         String selectedLanguage = languageDropDown.getSelectionModel().getSelectedItem();
         Locale.setDefault(selectedLanguage.equals("English") ? Locale.ENGLISH : Locale.FRENCH);
+        updateLanguage();
+    }
+
+    void updateLanguage(){
+        ResourceBundle resources = ResourceBundle.getBundle("com/example/WGUSoftware2/language_property/login", Locale.getDefault());
+        loginLbl.setText(resources.getString("loginLabel"));
+        usernameLbl.setText(resources.getString("usernameLabel"));
+        passwordLbl.setText(resources.getString("passwordLabel"));
+        loginButton.setText(resources.getString("loginButton"));
     }
 
     /**
@@ -85,18 +95,19 @@ public class LoginController {
         languageDropDown.getSelectionModel().selectFirst();
     }
 
-    /**
-     * Initializes
-     */
-    public void initialize(URL location, ResourceBundle resources){
-
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         populateLanguageDropDown();
+
         Locale userLocale = Locale.getDefault();
         userLocationLbl.setText(ZoneId.systemDefault().toString());
-        ResourceBundle languageBundle = ResourceBundle.getBundle("language_property.login");
-        loginLbl.setText(languageBundle.getString("loginLabel"));
-        usernameLbl.setText(languageBundle.getString("usernameLabel"));
-        passwordLbl.setText(languageBundle.getString("passwordLabel"));
-        loginButton.setText(languageBundle.getString("loginButton"));
+
+        resources = ResourceBundle.getBundle("com/example/WGUSoftware2/language_property/login", userLocale);
+
+        loginLbl.setText(resources.getString("loginLabel"));
+        usernameLbl.setText(resources.getString("usernameLabel"));
+        passwordLbl.setText(resources.getString("passwordLabel"));
+        loginButton.setText(resources.getString("loginButton"));
+
     }
 }
