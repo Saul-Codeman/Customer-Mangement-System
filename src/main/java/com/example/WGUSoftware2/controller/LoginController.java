@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.io.IOException;
+import java.net.URL;
+import java.time.ZoneId;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -26,7 +28,22 @@ public class LoginController {
     private PasswordField passwordField;
 
     @FXML
-    private Label userLocation;
+    private Label passwordLbl;
+
+    @FXML
+    private Label timeZoneLbl;
+
+    @FXML
+    private Label userLocationLbl;
+
+    @FXML
+    private Label languageLbl;
+
+    @FXML
+    private Label loginLbl;
+
+    @FXML
+    private Label usernameLbl;
 
     @FXML
     private TextField usernameField;
@@ -57,7 +74,6 @@ public class LoginController {
     void languageHandler(ActionEvent event) {
         String selectedLanguage = languageDropDown.getSelectionModel().getSelectedItem();
         Locale.setDefault(selectedLanguage.equals("English") ? Locale.ENGLISH : Locale.FRENCH);
-        loadTranslations();
     }
 
     /**
@@ -69,20 +85,18 @@ public class LoginController {
         languageDropDown.getSelectionModel().selectFirst();
     }
 
-    public void loadTranslations() {
-        messages = ResourceBundle.getBundle("com.example.WGUSoftware2.bundles.Messages", Locale.getDefault());
-        errorLabel.setText(messages.getString("errorLabel"));
-        loginButton.setText(messages.getString("loginButton"));
-        userLocation.setText(messages.getString("userLocation") + ": " + Library.getUserTimeZone());
-        usernameField.setPromptText(messages.getString("usernameField"));
-        passwordField.setPromptText(messages.getString("passwordField"));
-    }
     /**
      * Initializes
      */
-    public void initialize(){
+    public void initialize(URL location, ResourceBundle resources){
+
         populateLanguageDropDown();
-        String timeZone = Library.getUserTimeZone();
-        userLocation.setText(timeZone);
+        Locale userLocale = Locale.getDefault();
+        userLocationLbl.setText(ZoneId.systemDefault().toString());
+        ResourceBundle languageBundle = ResourceBundle.getBundle("language_property.login");
+        loginLbl.setText(languageBundle.getString("loginLabel"));
+        usernameLbl.setText(languageBundle.getString("usernameLabel"));
+        passwordLbl.setText(languageBundle.getString("passwordLabel"));
+        loginButton.setText(languageBundle.getString("loginButton"));
     }
 }

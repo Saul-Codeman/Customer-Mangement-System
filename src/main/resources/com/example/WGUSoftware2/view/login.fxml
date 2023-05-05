@@ -37,8 +37,8 @@
          </Button>
            <TextField fx:id="usernameField" maxWidth="200.0" prefHeight="25.0" promptText="Username" GridPane.columnIndex="1" GridPane.rowIndex="1" />
            <PasswordField fx:id="passwordField" maxWidth="200.0" promptText="Password" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-         <Label text="Username" GridPane.rowIndex="1" />
-         <Label text="Password" GridPane.rowIndex="2" />
+         <Label fx:id="usernameLbl" text="Username" GridPane.rowIndex="1" />
+         <Label fx:id="passwordLbl" text="Password" GridPane.rowIndex="2" />
          <ComboBox fx:id="languageDropDown" onAction="#languageHandler" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
             <padding>
                <Insets bottom="2.0" right="2.0" />
@@ -47,20 +47,20 @@
                <Insets bottom="20.0" />
             </GridPane.margin>
          </ComboBox>
-         <Label text="Language" GridPane.rowIndex="3">
+         <Label fx:id="languageLbl" text="Language" GridPane.rowIndex="3">
             <GridPane.margin>
                <Insets bottom="20.0" />
             </GridPane.margin>
          </Label>
-           <Label alignment="CENTER" style="-fx-font-size: 24;" text="Login" textAlignment="CENTER" GridPane.columnIndex="1">
+           <Label fx:id="loginLbl" alignment="CENTER" style="-fx-font-size: 24;" text="Login" textAlignment="CENTER" GridPane.columnIndex="1">
                <font>
                    <Font size="24.0" />
                </font>
            </Label>
          <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="4">
             <children>
-               <Label prefHeight="17.0" prefWidth="65.0" text="Time Zone:" />
-               <Label fx:id="userLocation" prefHeight="17.0" prefWidth="155.0" text="User Location">
+               <Label fx:id="timeZoneLbl" prefHeight="17.0" prefWidth="65.0" text="Time Zone:" />
+               <Label fx:id="userLocationLbl" prefHeight="17.0" prefWidth="155.0" text="User Location">
                   <VBox.margin>
                      <Insets top="5.0" />
                   </VBox.margin>

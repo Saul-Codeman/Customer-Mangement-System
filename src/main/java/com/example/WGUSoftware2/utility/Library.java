@@ -108,10 +108,6 @@ public class Library {
         ps.close();
         return types;
     }
-    public static String getUserTimeZone(){
-        TimeZone userTimeZone = TimeZone.getDefault();
-        return userTimeZone.getDisplayName(false, TimeZone.LONG);
-    }
 
 
 
