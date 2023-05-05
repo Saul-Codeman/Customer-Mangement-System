@@ -56,50 +56,17 @@ public class Database {
        
 
 
-    public static boolean validateCredentials(String username, String password) {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = getConnection();
-            String query = "SELECT * FROM users WHERE username = ? AND password = ?";
-            statement = connection.prepareStatement(query);
-            statement.setString(1, username);
-            statement.setString(2, password);
-            resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                return true;
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+    public static boolean validateCredentials(String username, String password) throws SQLException {
+        String sql = "SELECT * FROM users WHERE User_Name = ? AND Password = ?";
+        PreparedStatement ps = Database.connection.prepareStatement(sql);
+        ps.setString(1, username);
+        ps.setString(2, password);
+        ResultSet resultSet = ps.executeQuery();
+        if(resultSet.next()) {
+            return true;
+        }else{
+            return false;
         }
-
-        return false;
     }
 
 

@@ -1,6 +1,8 @@
 package com.example.WGUSoftware2.controller;
 
+import com.example.WGUSoftware2.utility.Database;
 import com.example.WGUSoftware2.utility.Library;
+import com.example.WGUSoftware2.utility.LoginLogger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,6 +12,7 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -55,16 +58,17 @@ public class LoginController implements Initializable {
      * @param event action on a button
      * @throws IOException catches RUNTIME ERROR
      */
-    public void handleLogin(ActionEvent event) throws IOException {
+    public void handleLogin(ActionEvent event) throws IOException, SQLException {
         String username = usernameField.getText();
         String password = passwordField.getText();
         // If the username and password match a specific database user
-        /* if (Database.validateCredentials(username, password)){
+        /*
+        if (Database.validateCredentials(username, password)){
             LoginLogger.log(username, true);
             Library.switchScreen(event, Library.dashboardUrl);
         }
         // Else give them an error and they remain on the same page
-        else{
+        else {
             LoginLogger.log(username, false);
             errorLabel.setText("Invalid username or password");
         }
