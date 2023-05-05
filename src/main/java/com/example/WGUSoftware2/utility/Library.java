@@ -1,11 +1,13 @@
 package com.example.WGUSoftware2.utility;
 
+import com.example.WGUSoftware2.model.Appointments;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
@@ -13,6 +15,8 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -107,6 +111,31 @@ public class Library {
         rs.close();
         ps.close();
         return types;
+    }
+
+    public void checkUpcomingAppointments() {
+        LocalDateTime nextAppointment = getAppointmentsWithin15();
+
+        if (nextAppointment != null) {
+            LocalDateTime currentTime = LocalDateTime.now();
+            Duration duration = Duration.between(currentTime, nextAppointment);
+
+            if (duration.toMinutes() <= 15) {
+                showAppointmentAlert(duration.toMinutes());
+            }
+        }
+    }
+
+    private ObservableList<Appointments> getAppointmentsWithin15(){
+
+    }
+
+    private void showAppointmentAlert(long minutesUntilAppointment) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Upcoming Appointment");
+        alert.setHeaderText("You have an appointment coming up!");
+        alert.setContentText("There is an appointment in " + minutesUntilAppointment + " minutes.");
+        alert.showAndWait();
     }
 
 

@@ -87,6 +87,8 @@ public class LoginController implements Initializable {
         loginLbl.setText(resources.getString("loginLabel"));
         usernameLbl.setText(resources.getString("usernameLabel"));
         passwordLbl.setText(resources.getString("passwordLabel"));
+        languageLbl.setText(resources.getString("languageLabel"));
+        timeZoneLbl.setText(resources.getString("timeZoneLabel"));
         loginButton.setText(resources.getString("loginButton"));
     }
 
@@ -111,6 +113,8 @@ public class LoginController implements Initializable {
         loginLbl.setText(resources.getString("loginLabel"));
         usernameLbl.setText(resources.getString("usernameLabel"));
         passwordLbl.setText(resources.getString("passwordLabel"));
+        languageLbl.setText(resources.getString("languageLabel"));
+        timeZoneLbl.setText(resources.getString("timeZoneLabel"));
         loginButton.setText(resources.getString("loginButton"));
 
     }

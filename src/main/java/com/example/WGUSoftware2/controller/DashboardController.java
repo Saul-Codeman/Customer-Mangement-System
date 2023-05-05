@@ -3,10 +3,13 @@ package com.example.WGUSoftware2.controller;
 import com.example.WGUSoftware2.utility.Library;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class DashboardController {
+public class DashboardController implements Initializable {
 
     /**
      * Switches to appointments page.
@@ -33,4 +36,8 @@ public class DashboardController {
         Library.switchScreen(event, Library.reportsUrl);
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        Library.checkUpcomingAppointments();
+    }
 }
