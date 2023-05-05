@@ -9,7 +9,7 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.WGUSoftware2.controller.DashboardController">
    <children>
-      <VBox layoutX="200.0" layoutY="25.0" prefHeight="350.0" prefWidth="200.0">
+      <VBox layoutX="190.0" layoutY="25.0" prefHeight="350.0" prefWidth="204.0">
          <children>
             <Label text="Dasboard">
                <font>
@@ -43,6 +43,11 @@
                   <Insets left="25.0" top="25.0" />
                </VBox.margin>
             </Button>
+            <Label fx:id="upcomingAppointmentsLbl" prefHeight="17.0" prefWidth="227.0" text="There are no upcoming appointments">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Label>
          </children>
       </VBox>
    </children>

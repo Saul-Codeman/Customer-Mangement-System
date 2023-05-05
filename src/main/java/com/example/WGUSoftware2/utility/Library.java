@@ -9,14 +9,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -113,29 +115,64 @@ public class Library {
         return types;
     }
 
-    public void checkUpcomingAppointments() {
-        LocalDateTime nextAppointment = getAppointmentsWithin15();
-
-        if (nextAppointment != null) {
-            LocalDateTime currentTime = LocalDateTime.now();
-            Duration duration = Duration.between(currentTime, nextAppointment);
-
-            if (duration.toMinutes() <= 15) {
-                showAppointmentAlert(duration.toMinutes());
-            }
+    public static void checkUpcomingAppointments(Label upcomingAppointmentsLbl) {
+        ObservableList<Appointments> appointmentsWithin15Mins = getAppointmentsWithin15Mins();
+        if (!appointmentsWithin15Mins.isEmpty()){
+            showAppointmentAlert(appointmentsWithin15Mins);
+            upcomingAppointmentsLbl.setText("There are upcoming appointments.");
+        }else{
+            upcomingAppointmentsLbl.setText("There are no upcoming appointments.");
         }
-    }
-
-    private ObservableList<Appointments> getAppointmentsWithin15(){
 
     }
 
-    private void showAppointmentAlert(long minutesUntilAppointment) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Upcoming Appointment");
-        alert.setHeaderText("You have an appointment coming up!");
-        alert.setContentText("There is an appointment in " + minutesUntilAppointment + " minutes.");
-        alert.showAndWait();
+    private static ObservableList<Appointments> getAppointmentsWithin15Mins(){
+        String sql = "SELECT * FROM appointments WHERE TIMESTAMPDIFF(MINUTE, NOW(), Start) BETWEEN 0 AND 15";
+        ObservableList<Appointments> appointments = FXCollections.observableArrayList();
+        appointments.clear();
+
+        try {
+            PreparedStatement ps = Database.connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            // Go through each row of the result set and make an appointment
+            while (rs.next()) {
+                Appointments appointment = new Appointments(
+                        rs.getInt("Appointment_ID"),
+                        rs.getString("Title"),
+                        rs.getString("Description"),
+                        rs.getString("Location"),
+                        rs.getString("Type"),
+                        rs.getTimestamp("Start").toLocalDateTime().atZone(ZoneId.systemDefault()),
+                        rs.getTimestamp("End").toLocalDateTime().atZone(ZoneId.systemDefault()),
+                        rs.getTimestamp("Create_Date").toLocalDateTime().atZone(ZoneId.systemDefault()),
+                        rs.getString("Created_By"),
+                        rs.getTimestamp("Last_Update"),
+                        rs.getString("Last_Updated_By"),
+                        rs.getInt("Customer_ID"),
+                        rs.getInt("User_ID"),
+                        rs.getInt("Contact_ID")
+                );
+                appointments.add(appointment);
+            }
+            rs.close();
+            ps.close();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return appointments;
+    }
+
+    private static void showAppointmentAlert(ObservableList<Appointments> appointmentsWithin15Mins) {
+        for (Appointments appointment : appointmentsWithin15Mins){
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Upcoming Appointment");
+            alert.setHeaderText("You have an appointment coming up!");
+            alert.setContentText("There is an appointment within 15 minutes. \n" +
+                    "Appointment ID: " + appointment.getAppointmentID() + "\n" +
+                    "Date: " + appointment.getStartDateTime().toLocalDateTime() + "\n" +
+                    "Time: " + appointment.getStartDateTime().toLocalDateTime().toLocalTime() + "-" + appointment.getEndDateTime().toLocalDateTime().toLocalTime());
+            alert.showAndWait();
+        }
     }
 
 
