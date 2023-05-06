@@ -163,14 +163,16 @@ public class Library {
     }
 
     private static void showAppointmentAlert(ObservableList<Appointments> appointmentsWithin15Mins) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
         for (Appointments appointment : appointmentsWithin15Mins){
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Upcoming Appointment");
             alert.setHeaderText("You have an appointment coming up!");
             alert.setContentText("There is an appointment within 15 minutes. \n" +
                     "Appointment ID: " + appointment.getAppointmentID() + "\n" +
-                    "Date: " + appointment.getStartDateTime().toLocalDateTime() + "\n" +
-                    "Time: " + appointment.getStartDateTime().toLocalDateTime().toLocalTime() + "-" + appointment.getEndDateTime().toLocalDateTime().toLocalTime());
+                    "Date: " + appointment.getStartDateTime().toLocalDateTime().format(dateFormatter) + "\n" +
+                    "Time: " + appointment.getStartDateTime().toLocalDateTime().toLocalTime().format(timeFormatter) + "-" + appointment.getEndDateTime().toLocalDateTime().toLocalTime().format(timeFormatter));
             alert.showAndWait();
         }
     }
