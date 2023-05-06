@@ -121,6 +121,7 @@ public class Library {
             showAppointmentAlert(appointmentsWithin15Mins);
             upcomingAppointmentsLbl.setText("There are upcoming appointments.");
         }else{
+            showNoAppointmentAlert();
             upcomingAppointmentsLbl.setText("There are no upcoming appointments.");
         }
 
@@ -171,10 +172,18 @@ public class Library {
             alert.setHeaderText("You have an appointment coming up!");
             alert.setContentText("There is an appointment within 15 minutes. \n" +
                     "Appointment ID: " + appointment.getAppointmentID() + "\n" +
+                    "User ID: " + appointment.getUserID() + "\n" +
                     "Date: " + appointment.getStartDateTime().toLocalDateTime().format(dateFormatter) + "\n" +
                     "Time: " + appointment.getStartDateTime().toLocalDateTime().toLocalTime().format(timeFormatter) + "-" + appointment.getEndDateTime().toLocalDateTime().toLocalTime().format(timeFormatter));
             alert.showAndWait();
         }
+    }
+
+    private static void showNoAppointmentAlert(){
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Upcoming Appointment");
+        alert.setHeaderText("You have no appointments within the next 15 minutes.");
+        alert.showAndWait();
     }
 
 

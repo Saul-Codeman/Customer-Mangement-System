@@ -96,7 +96,7 @@ public class LoginController implements Initializable {
      * Displays the languages available in the drop down box.
      */
     public void populateLanguageDropDown(){
-        ObservableList<String> languages = FXCollections.observableArrayList("English", "French");
+        ObservableList<String> languages = FXCollections.observableArrayList("English", "Français");
         languageDropDown.setItems(languages);
         languageDropDown.getSelectionModel().selectFirst();
     }
