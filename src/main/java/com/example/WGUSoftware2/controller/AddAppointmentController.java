@@ -141,8 +141,8 @@ public class AddAppointmentController implements Initializable {
             }
 
             // Converting to Utc to use in database
-            ZonedDateTime startDateTimeUtc = TimeZoneConverter.localToUtc(startDateTimeEst);
-            ZonedDateTime endDateTimeUtc = TimeZoneConverter.localToUtc(endDateTimeEst);
+            ZonedDateTime startDateTimeUtc = TimeZoneConverter.estToUtc(startDateTimeEst);
+            ZonedDateTime endDateTimeUtc = TimeZoneConverter.estToUtc(endDateTimeEst);
 
             // Check for overlapping appointments
             if (Appointments.addCheckAppointmentOverlap(customerID, startDateTimeUtc, endDateTimeUtc)) {

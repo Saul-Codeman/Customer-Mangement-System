@@ -3,6 +3,7 @@ package com.example.WGUSoftware2.controller;
 import com.example.WGUSoftware2.utility.Database;
 import com.example.WGUSoftware2.utility.Library;
 import com.example.WGUSoftware2.utility.LoginLogger;
+import com.example.WGUSoftware2.utility.UserSessionInfo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -61,9 +62,9 @@ public class LoginController implements Initializable {
     public void handleLogin(ActionEvent event) throws IOException, SQLException {
         String username = usernameField.getText();
         String password = passwordField.getText();
+        String selectedLanguage = languageDropDown.getSelectionModel().getSelectedItem();
         // If the username and password match a specific database user
-        /*
-        if (Database.validateCredentials(username, password)){
+        if (UserSessionInfo.validateCredentials(username, password, selectedLanguage)){
             LoginLogger.log(username, true);
             Library.switchScreen(event, Library.dashboardUrl);
         }
@@ -72,8 +73,6 @@ public class LoginController implements Initializable {
             LoginLogger.log(username, false);
             errorLabel.setText("Invalid username or password");
         }
-         */
-        Library.switchScreen(event, Library.dashboardUrl);
     }
     @FXML
     void languageHandler(ActionEvent event) {

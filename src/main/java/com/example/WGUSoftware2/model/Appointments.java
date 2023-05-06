@@ -4,6 +4,7 @@ import com.example.WGUSoftware2.controller.AppointmentsController;
 import com.example.WGUSoftware2.controller.ModifyAppointmentController;
 import com.example.WGUSoftware2.utility.Database;
 import com.example.WGUSoftware2.utility.Library;
+import com.example.WGUSoftware2.utility.UserSessionInfo;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -178,9 +179,9 @@ public class Appointments {
     public static void insertAppointment(String title, String description, String location, String type, Integer contactID, Integer customerID, Integer userID, ZonedDateTime startDate, ZonedDateTime endDate) throws SQLException {
         // Data entered by PC and user
         String createBy = "user";
-        ZonedDateTime createDate = ZonedDateTime.now();
+        ZonedDateTime createDate = TimeZoneConverter.localToUtc(ZonedDateTime.now().toLocalDateTime());
         String lastUpdateBy = "user";
-        Timestamp lastUpdateDateTime = Timestamp.valueOf(LocalDateTime.now());
+        Timestamp lastUpdateDateTime = Timestamp.valueOf(LocalDateTime.now().atZone(UserSessionInfo.getCurrentUserTimeZone()).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime());
 
         // Data from appointment
         String sql = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -250,9 +251,12 @@ public class Appointments {
             // Go through each row of the result set and make an appointment
             while (rs.next()) {
 
-                ZonedDateTime startDateTime = TimeZoneConverter.utcToLocal(rs.getTimestamp("Start").toLocalDateTime().atZone(ZoneId.systemDefault()));
-                ZonedDateTime endDateTime = TimeZoneConverter.utcToLocal(rs.getTimestamp("End").toLocalDateTime().atZone(ZoneId.systemDefault()));
+                // Convert the utc times to user local
+                ZonedDateTime startDateTime = TimeZoneConverter.utcToLocal(rs.getTimestamp("Start").toLocalDateTime().atZone(ZoneId.of("UTC")));
+                ZonedDateTime endDateTime = TimeZoneConverter.utcToLocal(rs.getTimestamp("End").toLocalDateTime().atZone(ZoneId.of("UTC")));
 
+                System.out.println("User Local Start Time: " + startDateTime);
+                System.out.println("User Local End Time: " + endDateTime);
 
                 Appointments appointment = new Appointments(
                         rs.getInt("Appointment_ID"),
@@ -262,7 +266,7 @@ public class Appointments {
                         rs.getString("Type"),
                         startDateTime,
                         endDateTime,
-                        rs.getTimestamp("Create_Date").toLocalDateTime().atZone(ZoneId.systemDefault()),
+                        rs.getTimestamp("Create_Date").toLocalDateTime().atZone(UserSessionInfo.getCurrentUserTimeZone()),
                         rs.getString("Created_By"),
                         rs.getTimestamp("Last_Update"),
                         rs.getString("Last_Updated_By"),

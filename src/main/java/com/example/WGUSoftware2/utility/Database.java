@@ -56,19 +56,6 @@ public class Database {
        
 
 
-    public static boolean validateCredentials(String username, String password) throws SQLException {
-        String sql = "SELECT * FROM users WHERE User_Name = ? AND Password = ?";
-        PreparedStatement ps = Database.connection.prepareStatement(sql);
-        ps.setString(1, username);
-        ps.setString(2, password);
-        ResultSet resultSet = ps.executeQuery();
-        if(resultSet.next()) {
-            return true;
-        }else{
-            return false;
-        }
-    }
-
 
 
 }

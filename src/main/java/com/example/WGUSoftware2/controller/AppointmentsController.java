@@ -3,6 +3,7 @@ package com.example.WGUSoftware2.controller;
 
 import com.example.WGUSoftware2.model.Appointments;
 import com.example.WGUSoftware2.utility.Library;
+import com.example.WGUSoftware2.utility.UserSessionInfo;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -182,6 +183,7 @@ public class AppointmentsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            System.out.println("User's time zone: " + UserSessionInfo.getCurrentUserTimeZone());
             setAppointmentsTable(appointmentTable, appointmentIdCol, titleCol, descriptionCol, locationCol, typeCol, startDateCol, startTimeCol, endDateCol, endTimeCol, customerIdCol, userIdCol, contactIdCol);
         } catch (SQLException throwables) {
             throwables.printStackTrace();

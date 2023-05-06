@@ -1,5 +1,7 @@
 package com.example.WGUSoftware2.model;
 
+import com.example.WGUSoftware2.utility.UserSessionInfo;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -7,28 +9,28 @@ import java.time.ZonedDateTime;
 public class TimeZoneConverter {
 
     public static ZonedDateTime localToUtc(LocalDateTime localDateTime) {
-        ZoneId localZoneId = ZoneId.systemDefault();
+        ZoneId localZoneId = UserSessionInfo.getCurrentUserTimeZone();
         ZonedDateTime localZonedDateTime = localDateTime.atZone(localZoneId);
         ZonedDateTime utcZonedDateTime = localZonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
         return utcZonedDateTime;
     }
 
-    public static LocalDateTime estToUtc(LocalDateTime estDateTime) {
+    public static ZonedDateTime estToUtc(LocalDateTime estDateTime) {
         ZoneId estZone = ZoneId.of("America/New_York");
         ZoneId utcZone = ZoneId.of("UTC");
         ZonedDateTime estZonedDateTime = estDateTime.atZone(estZone);
         ZonedDateTime utcZonedDateTime = estZonedDateTime.withZoneSameInstant(utcZone);
-        return utcZonedDateTime.toLocalDateTime();
+        return utcZonedDateTime;
     }
 
     public static ZonedDateTime utcToLocal(ZonedDateTime utcZonedDateTime) {
-        ZoneId localZoneId = ZoneId.systemDefault();
+        ZoneId localZoneId = UserSessionInfo.getCurrentUserTimeZone();
         ZonedDateTime localZonedDateTime = utcZonedDateTime.withZoneSameInstant(localZoneId);
         return localZonedDateTime;
     }
 
     public static LocalDateTime localToEst(LocalDateTime localDateTime) {
-        ZoneId systemZone = ZoneId.systemDefault();
+        ZoneId systemZone = UserSessionInfo.getCurrentUserTimeZone();
         ZoneId estZone = ZoneId.of("America/New_York");
         ZonedDateTime systemZonedDateTime = localDateTime.atZone(systemZone);
         ZonedDateTime estZonedDateTime = systemZonedDateTime.withZoneSameInstant(estZone);
