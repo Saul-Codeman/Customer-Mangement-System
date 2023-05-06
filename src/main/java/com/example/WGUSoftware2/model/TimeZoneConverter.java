@@ -21,12 +21,10 @@ public class TimeZoneConverter {
         return utcZonedDateTime.toLocalDateTime();
     }
 
-    public static LocalDateTime utcToLocal(LocalDateTime utcDateTime) {
-        ZoneId utcZone = ZoneId.of("UTC");
-        ZoneId systemZone = ZoneId.systemDefault();
-        ZonedDateTime utcZonedDateTime = utcDateTime.atZone(utcZone);
-        ZonedDateTime systemZonedDateTime = utcZonedDateTime.withZoneSameInstant(systemZone);
-        return systemZonedDateTime.toLocalDateTime();
+    public static ZonedDateTime utcToLocal(ZonedDateTime utcZonedDateTime) {
+        ZoneId localZoneId = ZoneId.systemDefault();
+        ZonedDateTime localZonedDateTime = utcZonedDateTime.withZoneSameInstant(localZoneId);
+        return localZonedDateTime;
     }
 
     public static LocalDateTime localToEst(LocalDateTime localDateTime) {

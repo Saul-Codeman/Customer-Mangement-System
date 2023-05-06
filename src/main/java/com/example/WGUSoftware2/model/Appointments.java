@@ -249,14 +249,19 @@ public class Appointments {
             ResultSet rs = ps.executeQuery();
             // Go through each row of the result set and make an appointment
             while (rs.next()) {
+
+                ZonedDateTime startDateTime = TimeZoneConverter.utcToLocal(rs.getTimestamp("Start").toLocalDateTime().atZone(ZoneId.systemDefault()));
+                ZonedDateTime endDateTime = TimeZoneConverter.utcToLocal(rs.getTimestamp("End").toLocalDateTime().atZone(ZoneId.systemDefault()));
+
+
                 Appointments appointment = new Appointments(
                         rs.getInt("Appointment_ID"),
                         rs.getString("Title"),
                         rs.getString("Description"),
                         rs.getString("Location"),
                         rs.getString("Type"),
-                        rs.getTimestamp("Start").toLocalDateTime().atZone(ZoneId.systemDefault()),
-                        rs.getTimestamp("End").toLocalDateTime().atZone(ZoneId.systemDefault()),
+                        startDateTime,
+                        endDateTime,
                         rs.getTimestamp("Create_Date").toLocalDateTime().atZone(ZoneId.systemDefault()),
                         rs.getString("Created_By"),
                         rs.getTimestamp("Last_Update"),
