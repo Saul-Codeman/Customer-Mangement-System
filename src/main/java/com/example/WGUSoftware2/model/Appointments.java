@@ -190,8 +190,8 @@ public class Appointments {
         ps.setString(2, description);
         ps.setString(3, location);
         ps.setString(4, type);
-        ps.setTimestamp(5, Timestamp.valueOf(startDate.toLocalDateTime()));
-        ps.setTimestamp(6, Timestamp.valueOf(endDate.toLocalDateTime()));
+        ps.setTimestamp(5, Timestamp.from(startDate.toInstant()));
+        ps.setTimestamp(6, Timestamp.from(endDate.toInstant()));
         ps.setTimestamp(7, Timestamp.valueOf(createDate.toLocalDateTime()));
         ps.setString(8, createBy);
         ps.setTimestamp(9, lastUpdateDateTime);
@@ -252,11 +252,10 @@ public class Appointments {
             while (rs.next()) {
 
                 // Convert the utc times to user local
-                ZonedDateTime startDateTime = TimeZoneConverter.utcToLocal(rs.getTimestamp("Start").toLocalDateTime().atZone(ZoneId.of("UTC")));
-                ZonedDateTime endDateTime = TimeZoneConverter.utcToLocal(rs.getTimestamp("End").toLocalDateTime().atZone(ZoneId.of("UTC")));
-
-                System.out.println("User Local Start Time: " + startDateTime);
-                System.out.println("User Local End Time: " + endDateTime);
+                ZonedDateTime startDateTimeUtc = rs.getTimestamp("Start").toInstant().atZone(ZoneId.of("UTC"));
+                ZonedDateTime endDateTimeUtc = rs.getTimestamp("End").toInstant().atZone(ZoneId.of("UTC"));
+                ZonedDateTime startDateTimeLocal = TimeZoneConverter.utcToLocal(startDateTimeUtc.toLocalDateTime());
+                ZonedDateTime endDateTimeLocal = TimeZoneConverter.utcToLocal(endDateTimeUtc.toLocalDateTime());
 
                 Appointments appointment = new Appointments(
                         rs.getInt("Appointment_ID"),
@@ -264,8 +263,8 @@ public class Appointments {
                         rs.getString("Description"),
                         rs.getString("Location"),
                         rs.getString("Type"),
-                        startDateTime,
-                        endDateTime,
+                        startDateTimeLocal,
+                        endDateTimeLocal,
                         rs.getTimestamp("Create_Date").toLocalDateTime().atZone(UserSessionInfo.getCurrentUserTimeZone()),
                         rs.getString("Created_By"),
                         rs.getTimestamp("Last_Update"),

@@ -90,9 +90,20 @@ public class AddAppointmentController implements Initializable {
             LocalDateTime startDateTime = LocalDateTime.of(startDate, startTime);
             LocalDateTime endDateTime = LocalDateTime.of(endDate, endTime);
 
+            // Conversion of local date time to utc
+            ZonedDateTime startDateTimeUtc = TimeZoneConverter.localToUtc(startDateTime);
+            ZonedDateTime endDateTimeUtc = TimeZoneConverter.localToUtc(endDateTime);
+
+            System.out.println("Start time: " + startDateTime);
+            System.out.println("End time: " + endDateTime);
+
+            System.out.println("Start time in UTC: " + startDateTimeUtc);
+            System.out.println("End time in UTC: " + endDateTimeUtc);
+
             // Conversion of provided system (local) time to EST
             LocalDateTime startDateTimeEst = TimeZoneConverter.localToEst(startDateTime);
             LocalDateTime endDateTimeEst = TimeZoneConverter.localToEst(endDateTime);
+
 
             // Check if startDateTime is in the past
             ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/New_York"));
@@ -139,10 +150,6 @@ public class AddAppointmentController implements Initializable {
                 alert.showAndWait();
                 return; // Exit the method without saving the appointment
             }
-
-            // Converting to Utc to use in database
-            ZonedDateTime startDateTimeUtc = TimeZoneConverter.estToUtc(startDateTimeEst);
-            ZonedDateTime endDateTimeUtc = TimeZoneConverter.estToUtc(endDateTimeEst);
 
             // Check for overlapping appointments
             if (Appointments.addCheckAppointmentOverlap(customerID, startDateTimeUtc, endDateTimeUtc)) {

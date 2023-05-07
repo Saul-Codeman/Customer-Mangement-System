@@ -10,8 +10,9 @@ public class TimeZoneConverter {
 
     public static ZonedDateTime localToUtc(LocalDateTime localDateTime) {
         ZoneId localZoneId = UserSessionInfo.getCurrentUserTimeZone();
+        ZoneId utcZoneId = ZoneId.of("UTC");
         ZonedDateTime localZonedDateTime = localDateTime.atZone(localZoneId);
-        ZonedDateTime utcZonedDateTime = localZonedDateTime.withZoneSameInstant(ZoneId.of("UTC"));
+        ZonedDateTime utcZonedDateTime = localZonedDateTime.withZoneSameInstant(utcZoneId);
         return utcZonedDateTime;
     }
 
@@ -23,17 +24,20 @@ public class TimeZoneConverter {
         return utcZonedDateTime;
     }
 
-    public static ZonedDateTime utcToLocal(ZonedDateTime utcZonedDateTime) {
+    public static ZonedDateTime utcToLocal(LocalDateTime utcDateTime) {
+        ZoneId utcZoneId = ZoneId.of("UTC");
         ZoneId localZoneId = UserSessionInfo.getCurrentUserTimeZone();
+        ZonedDateTime utcZonedDateTime = utcDateTime.atZone(utcZoneId);
         ZonedDateTime localZonedDateTime = utcZonedDateTime.withZoneSameInstant(localZoneId);
         return localZonedDateTime;
     }
 
+
     public static LocalDateTime localToEst(LocalDateTime localDateTime) {
-        ZoneId systemZone = UserSessionInfo.getCurrentUserTimeZone();
-        ZoneId estZone = ZoneId.of("America/New_York");
-        ZonedDateTime systemZonedDateTime = localDateTime.atZone(systemZone);
-        ZonedDateTime estZonedDateTime = systemZonedDateTime.withZoneSameInstant(estZone);
+        ZoneId localZoneId = UserSessionInfo.getCurrentUserTimeZone();
+        ZoneId estZoneId = ZoneId.of("America/New_York");
+        ZonedDateTime localZonedDateTime = localDateTime.atZone(localZoneId);
+        ZonedDateTime estZonedDateTime = localZonedDateTime.withZoneSameInstant(estZoneId);
         return estZonedDateTime.toLocalDateTime();
     }
 }
