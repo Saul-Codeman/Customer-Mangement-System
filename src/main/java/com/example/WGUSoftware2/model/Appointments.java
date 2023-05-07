@@ -215,8 +215,8 @@ public class Appointments {
         ps.setString(2, description);
         ps.setString(3, location);
         ps.setString(4, type);
-        ps.setTimestamp(5, Timestamp.valueOf(startDateTime.toLocalDateTime()));
-        ps.setTimestamp(6, Timestamp.valueOf(endDateTime.toLocalDateTime()));
+        ps.setTimestamp(5, Timestamp.from(startDateTime.toInstant()));
+        ps.setTimestamp(6, Timestamp.from(endDateTime.toInstant()));
         ps.setInt(7, customerID);
         ps.setInt(8, userID);
         ps.setInt(9, contactID);
