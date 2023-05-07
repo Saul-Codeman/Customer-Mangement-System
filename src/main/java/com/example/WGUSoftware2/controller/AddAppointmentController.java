@@ -94,12 +94,6 @@ public class AddAppointmentController implements Initializable {
             ZonedDateTime startDateTimeUtc = TimeZoneConverter.localToUtc(startDateTime);
             ZonedDateTime endDateTimeUtc = TimeZoneConverter.localToUtc(endDateTime);
 
-            System.out.println("Start time: " + startDateTime);
-            System.out.println("End time: " + endDateTime);
-
-            System.out.println("Start time in UTC: " + startDateTimeUtc);
-            System.out.println("End time in UTC: " + endDateTimeUtc);
-
             // Conversion of provided system (local) time to EST
             LocalDateTime startDateTimeEst = TimeZoneConverter.localToEst(startDateTime);
             LocalDateTime endDateTimeEst = TimeZoneConverter.localToEst(endDateTime);

@@ -1,6 +1,7 @@
 package com.example.WGUSoftware2.controller;
 
 import com.example.WGUSoftware2.model.Appointments;
+import com.example.WGUSoftware2.model.TimeZoneConverter;
 import com.example.WGUSoftware2.utility.Library;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,10 +13,8 @@ import javafx.util.converter.LocalTimeStringConverter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
+import java.time.chrono.ChronoLocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
@@ -98,8 +97,37 @@ public class ModifyAppointmentController implements Initializable {
             LocalTime startTime = startTimeSpinner.getValue();
             LocalDate endDate = endDateDP.getValue();
             LocalTime endTime = endTimeSpinner.getValue();
+
+            // Combine dates and times
+            LocalDateTime startDateTime = LocalDateTime.of(startDate, startTime);
+            LocalDateTime endDateTime = LocalDateTime.of(endDate, endTime);
+
+            // Conversion of local date time to utc
+            ZonedDateTime startDateTimeUtc = TimeZoneConverter.localToUtc(startDateTime);
+            ZonedDateTime endDateTimeUtc = TimeZoneConverter.localToUtc(endDateTime);
+
+            // Conversion of provided system (local) time to EST
+            LocalDateTime startDateTimeEst = TimeZoneConverter.localToEst(startDateTime);
+            LocalDateTime endDateTimeEst = TimeZoneConverter.localToEst(endDateTime);
+
+
+            // Check if startDateTime is in the past
+            ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/New_York"));
+
+
             // Check if startTime and endTime are within business hours
-            if (startTime.isBefore(LocalTime.of(8, 0)) || endTime.isAfter(LocalTime.of(22, 0))) {
+            if (startDateTimeEst.isBefore(ChronoLocalDateTime.from(now))) {
+                // Display an error message to the user
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Invalid appointment time");
+                alert.setContentText("Appointments cannot be scheduled in the past.");
+                alert.showAndWait();
+                return; // Exit the method without saving the appointment
+            }
+
+            // Check if startDateTimeEst and endDateTimeEst are within business hours
+            if (startDateTimeEst.toLocalTime().isBefore(LocalTime.of(8, 0)) || endDateTimeEst.toLocalTime().isAfter(LocalTime.of(22, 0))) {
                 // Display an error message to the user
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -108,8 +136,9 @@ public class ModifyAppointmentController implements Initializable {
                 alert.showAndWait();
                 return; // Exit the method without saving the appointment
             }
-            // Check if startDate is equal to or before endDate
-            if (startDate.isAfter(endDate)) {
+
+            // Check if startDateTimeEst is before endDateTimeEst
+            if (startDateTimeEst.toLocalDate().isAfter(endDateTimeEst.toLocalDate())) {
                 // Display an error message to the user
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -119,8 +148,8 @@ public class ModifyAppointmentController implements Initializable {
                 return; // Exit the method without saving the appointment
             }
 
-            // Check if startTime is equal to or before endTime
-            if (!startTime.isBefore(endTime)) {
+            // Check if startDateTimeEst is before endDateTimeEst
+            if (!startDateTimeEst.toLocalTime().isBefore(endDateTimeEst.toLocalTime())) {
                 // Display an error message to the user
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
@@ -130,11 +159,8 @@ public class ModifyAppointmentController implements Initializable {
                 return; // Exit the method without saving the appointment
             }
 
-            ZonedDateTime startDateTime = ZonedDateTime.of(startDate, startTime, ZoneId.systemDefault());
-            ZonedDateTime endDateTime = ZonedDateTime.of(endDate, endTime, ZoneId.systemDefault());
-
             // Check for overlapping appointments
-            if (Appointments.modifyCheckAppointmentOverlap(customerID, startDateTime, endDateTime, appointmentID)) {
+            if (Appointments.modifyCheckAppointmentOverlap(customerID, startDateTimeUtc, endDateTimeUtc, appointmentID)) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Overlapping appointment");
@@ -142,7 +168,7 @@ public class ModifyAppointmentController implements Initializable {
                 alert.showAndWait();
                 return;
             }
-            Appointments.updateAppointment(appointmentID, title, description, location, type, contactID, customerID, userID, startDateTime, endDateTime);
+            Appointments.updateAppointment(appointmentID, title, description, location, type, contactID, customerID, userID, startDateTimeUtc, endDateTimeUtc);
             Library.switchScreen(event, Library.appointmentsUrl);
         }catch(NumberFormatException e){
             Alert alert = new Alert(Alert.AlertType.ERROR);

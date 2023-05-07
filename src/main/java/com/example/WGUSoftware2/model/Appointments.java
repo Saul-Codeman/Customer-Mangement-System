@@ -210,7 +210,12 @@ public class Appointments {
     }
 
     public static void updateAppointment(Integer appointmentID, String title, String description, String location, String type, Integer contactID, Integer customerID, Integer userID, ZonedDateTime startDateTime, ZonedDateTime endDateTime) throws SQLException {
-        String sql = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? WHERE Appointment_ID = ?";
+        // Data entered by PC and user
+        Instant now = Instant.now();
+        String lastUpdateBy = "user";
+        Instant lastUpdate = now;
+
+        String sql = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, Last_Update = ?, Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? WHERE Appointment_ID = ?";
         PreparedStatement ps = Database.connection.prepareStatement(sql);
         ps.setString(1, title);
         ps.setString(2, description);
@@ -218,10 +223,12 @@ public class Appointments {
         ps.setString(4, type);
         ps.setTimestamp(5, Timestamp.from(startDateTime.toInstant()));
         ps.setTimestamp(6, Timestamp.from(endDateTime.toInstant()));
-        ps.setInt(7, customerID);
-        ps.setInt(8, userID);
-        ps.setInt(9, contactID);
-        ps.setInt(10, appointmentID);
+        ps.setTimestamp(7, Timestamp.from(lastUpdate));
+        ps.setString(8, lastUpdateBy);
+        ps.setInt(9, customerID);
+        ps.setInt(10, userID);
+        ps.setInt(11, contactID);
+        ps.setInt(12, appointmentID);
         int rowsAffected = ps.executeUpdate();
 
         if(rowsAffected > 0) {
