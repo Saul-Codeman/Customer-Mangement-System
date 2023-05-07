@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
@@ -555,12 +556,19 @@ public class Appointments {
     }
 
     public static void sortWeek(TableView<Appointments> appointmentsTable, TableColumn<Appointments, Integer> appointmentIdCol, TableColumn<Appointments, String> titleCol, TableColumn<Appointments, String> descriptionCol, TableColumn<Appointments, String> locationCol, TableColumn<Appointments, String> typeCol, TableColumn<Appointments, ZonedDateTime> startDateCol, TableColumn<Appointments, ZonedDateTime> startTimeCol, TableColumn<Appointments, ZonedDateTime> endDateCol, TableColumn<Appointments, ZonedDateTime> endTimeCol, TableColumn<Appointments, Integer> customerIdCol, TableColumn<Appointments, Integer> userIdCol, TableColumn<Appointments, Integer> contactIdCol) throws SQLException {
-        String sql = "SELECT * FROM appointments WHERE WEEK(Start) = ? ORDER BY Start ASC";
+
+
+        LocalDate today = LocalDate.now();
+        DayOfWeek firstDayOfWeek = WeekFields.of(Locale.getDefault()).getFirstDayOfWeek();
+        LocalDate startOfWeek = today.with(TemporalAdjusters.previousOrSame(firstDayOfWeek));
+        LocalDate endOfWeek = startOfWeek.plusDays(7);
+
+        String sql = "SELECT * FROM appointments WHERE Start >= ? AND Start <= ? ORDER BY Start ASC";
         ObservableList<Appointments> data = FXCollections.observableArrayList();
-        int week = LocalDate.now().get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear());
         try {
             PreparedStatement ps = Database.connection.prepareStatement(sql);
-            ps.setInt(1, week);
+            ps.setObject(1, startOfWeek.atStartOfDay(ZoneId.systemDefault()));
+            ps.setObject(2, endOfWeek.plusDays(1).atStartOfDay(ZoneId.systemDefault()));
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Appointments appointment = new Appointments(
