@@ -4,6 +4,8 @@ import com.example.WGUSoftware2.controller.CustomerController;
 import com.example.WGUSoftware2.controller.ModifyCustomerController;
 import com.example.WGUSoftware2.utility.Database;
 import com.example.WGUSoftware2.utility.Library;
+import com.example.WGUSoftware2.utility.UserSessionInfo;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -19,10 +21,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 public class Customers {
 
@@ -147,10 +147,11 @@ public class Customers {
     public static void insertCustomer(String customerName, String address, String postalCode, String phone, int divisionID) throws SQLException {
 
         // Data entered by PC and user
-        String createdBy = "user";
-        ZonedDateTime createDate = ZonedDateTime.now();
-        String lastUpdatedBy = "user";
-        Timestamp lastUpdateDateTime = Timestamp.valueOf(LocalDateTime.now());
+        Instant now = Instant.now();
+        String createdBy = UserSessionInfo.getCurrentUser().getUsername();
+        Instant createDate = now;
+        String lastUpdatedBy = UserSessionInfo.getCurrentUser().getUsername();
+        Instant lastUpdateDateTime = now;
 
         // Data input from customer
         String sql = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Create_Date, Created_By, Last_Update, Last_Updated_By, Division_ID) VALUES(?,?,?,?,?,?,?,?,?)";
@@ -159,9 +160,9 @@ public class Customers {
         ps.setString(2, address);
         ps.setString(3, postalCode);
         ps.setString(4, phone);
-        ps.setTimestamp(5, Timestamp.valueOf(createDate.toLocalDateTime()));
+        ps.setTimestamp(5, Timestamp.from(createDate));
         ps.setString(6, createdBy);
-        ps.setTimestamp(7, Timestamp.valueOf(lastUpdateDateTime.toLocalDateTime()));
+        ps.setTimestamp(7, Timestamp.from(lastUpdateDateTime));
         ps.setString(8, lastUpdatedBy);
         ps.setInt(9, divisionID);
 
@@ -177,8 +178,9 @@ public class Customers {
     public static void updateCustomer(Integer customerID, String customerName, String address, String postalCode, String phone, int divisionID) throws SQLException {
 
         // Data input by PC
-        String lastUpdatedBy = "user";
-        Timestamp lastUpdateDateTime = Timestamp.valueOf(LocalDateTime.now());
+        Instant now = Instant.now();
+        String lastUpdatedBy = UserSessionInfo.getCurrentUser().getUsername();
+        Instant lastUpdateDateTime = now;
 
         String sql = "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Last_Update = ?, Last_Updated_By = ?, Division_ID = ? WHERE Customer_ID = ?";
         PreparedStatement ps = Database.connection.prepareStatement(sql);
@@ -186,7 +188,7 @@ public class Customers {
         ps.setString(2, address);
         ps.setString(3, postalCode);
         ps.setString(4, phone);
-        ps.setTimestamp(5, lastUpdateDateTime);
+        ps.setTimestamp(5, Timestamp.from(lastUpdateDateTime));
         ps.setString(6, lastUpdatedBy);
         ps.setInt(7, divisionID);
         ps.setInt(8, customerID);
@@ -221,15 +223,22 @@ public class Customers {
             ResultSet rs = ps.executeQuery();
             // Go through each row of the result set and make an appointment
             while (rs.next()) {
+
+                ZonedDateTime createdDateUtc = rs.getTimestamp("Create_Date").toInstant().atZone(ZoneId.of("UTC"));
+                ZonedDateTime lastUpdateUtc = rs.getTimestamp("Last_Update").toInstant().atZone(ZoneId.of("UTC"));
+
+                ZonedDateTime createdDateLocal = TimeZoneConverter.utcToLocal(createdDateUtc.toLocalDateTime());
+                ZonedDateTime lastUpdateLocal = TimeZoneConverter.utcToLocal(lastUpdateUtc.toLocalDateTime());
+
                 Customers customer = new Customers(
                         rs.getInt("Customer_ID"),
                         rs.getString("Customer_Name"),
                         rs.getString("Address"),
                         rs.getString("Postal_Code"),
                         rs.getString("Phone"),
-                        rs.getTimestamp("Create_Date").toLocalDateTime().atZone(ZoneId.systemDefault()),
+                        createdDateLocal,
                         rs.getString("Created_By"),
-                        rs.getTimestamp("Last_Update"),
+                        Timestamp.from(Instant.from(lastUpdateLocal)),
                         rs.getString("Last_Updated_By"),
                         rs.getInt("Division_ID")
                 );
@@ -249,9 +258,18 @@ public class Customers {
         addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
         postalCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        createDateCol.setCellValueFactory(new PropertyValueFactory<>("createDate"));
+        createDateCol.setCellValueFactory(cellData -> {
+            ZonedDateTime createDate = cellData.getValue().getCreateDate();
+            String formattedCreateDate = createDate.format(DateTimeFormatter.ofPattern("M/d/yyyy"));
+            return new SimpleObjectProperty(formattedCreateDate);
+        });
         createdByCol.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
-        lastUpdateCol.setCellValueFactory(new PropertyValueFactory<>("lastUpdate"));
+        lastUpdateCol.setCellValueFactory(cellData -> {
+            Timestamp lastUpdate = cellData.getValue().getLastUpdate();
+            LocalDateTime localDateTime = lastUpdate.toLocalDateTime();
+            String formattedLastUpdate = localDateTime.format(DateTimeFormatter.ofPattern("M/d/yyyy"));
+            return new SimpleObjectProperty(formattedLastUpdate);
+        });
         lastUpdateByCol.setCellValueFactory(new PropertyValueFactory<>("lastUpdatedBy"));
         divisionIdCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
     }
@@ -348,15 +366,23 @@ public class Customers {
             ps.setString(1, type);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+
+                ZonedDateTime createdDateUtc = rs.getTimestamp("Create_Date").toInstant().atZone(ZoneId.of("UTC"));
+                ZonedDateTime lastUpdateUtc = rs.getTimestamp("Last_Update").toInstant().atZone(ZoneId.of("UTC"));
+
+                ZonedDateTime createdDateLocal = TimeZoneConverter.utcToLocal(createdDateUtc.toLocalDateTime());
+                ZonedDateTime lastUpdateLocal = TimeZoneConverter.utcToLocal(lastUpdateUtc.toLocalDateTime());
+
+
                 Customers customer = new Customers(
                         rs.getInt("Customer_ID"),
                         rs.getString("Customer_Name"),
                         rs.getString("Address"),
                         rs.getString("Postal_Code"),
                         rs.getString("Phone"),
-                        rs.getTimestamp("Create_Date").toLocalDateTime().atZone(ZoneId.systemDefault()),
+                        createdDateLocal,
                         rs.getString("Created_By"),
-                        rs.getTimestamp("Last_Update"),
+                        Timestamp.from(Instant.from(lastUpdateLocal)),
                         rs.getString("Last_Updated_By"),
                         rs.getInt("Division_ID")
                 );
@@ -376,9 +402,18 @@ public class Customers {
         addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
         postalCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        createDateCol.setCellValueFactory(new PropertyValueFactory<>("createDate"));
+        createDateCol.setCellValueFactory(cellData -> {
+            ZonedDateTime createDate = cellData.getValue().getCreateDate();
+            String formattedCreateDate = createDate.format(DateTimeFormatter.ofPattern("M/d/yyyy"));
+            return new SimpleObjectProperty(formattedCreateDate);
+        });
         createdByCol.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
-        lastUpdateCol.setCellValueFactory(new PropertyValueFactory<>("lastUpdate"));
+        lastUpdateCol.setCellValueFactory(cellData -> {
+            Timestamp lastUpdate = cellData.getValue().getLastUpdate();
+            LocalDateTime localDateTime = lastUpdate.toLocalDateTime();
+            String formattedLastUpdate = localDateTime.format(DateTimeFormatter.ofPattern("M/d/yyyy"));
+            return new SimpleObjectProperty(formattedLastUpdate);
+        });
         lastUpdateByCol.setCellValueFactory(new PropertyValueFactory<>("lastUpdatedBy"));
         divisionIdCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
 
@@ -422,15 +457,22 @@ public class Customers {
             ps.setInt(1, monthNumber);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+
+                ZonedDateTime createdDateUtc = rs.getTimestamp("Create_Date").toInstant().atZone(ZoneId.of("UTC"));
+                ZonedDateTime lastUpdateUtc = rs.getTimestamp("Last_Update").toInstant().atZone(ZoneId.of("UTC"));
+
+                ZonedDateTime createdDateLocal = TimeZoneConverter.utcToLocal(createdDateUtc.toLocalDateTime());
+                ZonedDateTime lastUpdateLocal = TimeZoneConverter.utcToLocal(lastUpdateUtc.toLocalDateTime());
+
                 Customers customer = new Customers(
                         rs.getInt("Customer_ID"),
                         rs.getString("Customer_Name"),
                         rs.getString("Address"),
                         rs.getString("Postal_Code"),
                         rs.getString("Phone"),
-                        rs.getTimestamp("Create_Date").toLocalDateTime().atZone(ZoneId.systemDefault()),
+                        createdDateLocal,
                         rs.getString("Created_By"),
-                        rs.getTimestamp("Last_Update"),
+                        Timestamp.from(Instant.from(lastUpdateLocal)),
                         rs.getString("Last_Updated_By"),
                         rs.getInt("Division_ID")
                 );
@@ -450,9 +492,18 @@ public class Customers {
         addressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
         postalCol.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
         phoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        createDateCol.setCellValueFactory(new PropertyValueFactory<>("createDate"));
+        createDateCol.setCellValueFactory(cellData -> {
+            ZonedDateTime createDate = cellData.getValue().getCreateDate();
+            String formattedCreateDate = createDate.format(DateTimeFormatter.ofPattern("M/d/yyyy"));
+            return new SimpleObjectProperty(formattedCreateDate);
+        });
         createdByCol.setCellValueFactory(new PropertyValueFactory<>("createdBy"));
-        lastUpdateCol.setCellValueFactory(new PropertyValueFactory<>("lastUpdate"));
+        lastUpdateCol.setCellValueFactory(cellData -> {
+            Timestamp lastUpdate = cellData.getValue().getLastUpdate();
+            LocalDateTime localDateTime = lastUpdate.toLocalDateTime();
+            String formattedLastUpdate = localDateTime.format(DateTimeFormatter.ofPattern("M/d/yyyy"));
+            return new SimpleObjectProperty(formattedLastUpdate);
+        });
         lastUpdateByCol.setCellValueFactory(new PropertyValueFactory<>("lastUpdatedBy"));
         divisionIdCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
     }

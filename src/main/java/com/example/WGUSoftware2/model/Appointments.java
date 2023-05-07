@@ -178,10 +178,10 @@ public class Appointments {
 
     public static void insertAppointment(String title, String description, String location, String type, Integer contactID, Integer customerID, Integer userID, ZonedDateTime startDate, ZonedDateTime endDate) throws SQLException {
         // Data entered by PC and user
-        String createBy = "user";
+        String createBy = UserSessionInfo.getCurrentUser().getUsername();
         Instant now = Instant.now();
         Instant createDate = now;
-        String lastUpdateBy = "user";
+        String lastUpdateBy = UserSessionInfo.getCurrentUser().getUsername();
         Instant lastUpdate = now;
 
         // Data from appointment
@@ -212,7 +212,7 @@ public class Appointments {
     public static void updateAppointment(Integer appointmentID, String title, String description, String location, String type, Integer contactID, Integer customerID, Integer userID, ZonedDateTime startDateTime, ZonedDateTime endDateTime) throws SQLException {
         // Data entered by PC and user
         Instant now = Instant.now();
-        String lastUpdateBy = "user";
+        String lastUpdateBy = UserSessionInfo.getCurrentUser().getUsername();
         Instant lastUpdate = now;
 
         String sql = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, Last_Update = ?, Last_Updated_By = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? WHERE Appointment_ID = ?";
@@ -262,8 +262,15 @@ public class Appointments {
                 // Convert the utc times to user local
                 ZonedDateTime startDateTimeUtc = rs.getTimestamp("Start").toInstant().atZone(ZoneId.of("UTC"));
                 ZonedDateTime endDateTimeUtc = rs.getTimestamp("End").toInstant().atZone(ZoneId.of("UTC"));
+                ZonedDateTime createdDateUtc = rs.getTimestamp("Create_Date").toInstant().atZone(ZoneId.of("UTC"));
+                ZonedDateTime lastUpdateUtc = rs.getTimestamp("Last_Update").toInstant().atZone(ZoneId.of("UTC"));
+
                 ZonedDateTime startDateTimeLocal = TimeZoneConverter.utcToLocal(startDateTimeUtc.toLocalDateTime());
                 ZonedDateTime endDateTimeLocal = TimeZoneConverter.utcToLocal(endDateTimeUtc.toLocalDateTime());
+                ZonedDateTime createdDateLocal = TimeZoneConverter.utcToLocal(createdDateUtc.toLocalDateTime());
+                ZonedDateTime lastUpdateLocal = TimeZoneConverter.utcToLocal(lastUpdateUtc.toLocalDateTime());
+
+
 
                 Appointments appointment = new Appointments(
                         rs.getInt("Appointment_ID"),
@@ -273,9 +280,9 @@ public class Appointments {
                         rs.getString("Type"),
                         startDateTimeLocal,
                         endDateTimeLocal,
-                        rs.getTimestamp("Create_Date").toLocalDateTime().atZone(UserSessionInfo.getCurrentUserTimeZone()),
+                        createdDateLocal,
                         rs.getString("Created_By"),
-                        rs.getTimestamp("Last_Update"),
+                        Timestamp.from(Instant.from(lastUpdateLocal)),
                         rs.getString("Last_Updated_By"),
                         rs.getInt("Customer_ID"),
                         rs.getInt("User_ID"),
