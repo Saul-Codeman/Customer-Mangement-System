@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
@@ -15,6 +16,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static com.example.WGUSoftware2.model.Customers.hasAppointment;
@@ -85,18 +87,40 @@ public class CustomerController implements Initializable {
      */
     @FXML
     void deleteHandler(ActionEvent event) throws SQLException {
+        // Customer selected
+        Customers selectedCustomer = customersTable.getSelectionModel().getSelectedItem();
         // Add a condition that prevents the deletion of a customer with an appointment
-        if (customersTable.getSelectionModel().getSelectedItem() == null){
+        if (selectedCustomer == null) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select a customer to delete");
             alert.showAndWait();
-        }else{
+        } else {
             // Add a condition that prevents the deletion of a customer with an appointment
-            if(hasAppointment(customersTable.getSelectionModel().getSelectedItem().getCustomerID())){
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Cannot delete a customer with an appointment");
-                alert.showAndWait();
-            }else{
-                Customers.deleteCustomer(customersTable.getSelectionModel().getSelectedItem().getCustomerID());
-                setCustomersTable(customersTable, customerIdCol, customerNameCol, addressCol, postalCodeCol, phoneCol, createDateCol, createdByCol, lastUpdateCol, lastUpdatedByCol, divisionIdCol);
+            if (hasAppointment(selectedCustomer.getCustomerID())) {
+                Alert confirmDelete = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmDelete.setTitle("Confirm Delete");
+                confirmDelete.setHeaderText("Deleting this customer will also delete all associated appointments.");
+                confirmDelete.setContentText("Do you want to proceed?");
+                Optional<ButtonType> result = confirmDelete.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    // Delete the customer and all associated appointments
+                    Customers.deleteCustomerAppointments(selectedCustomer.getCustomerID());
+                    Customers.deleteCustomer(selectedCustomer.getCustomerID());
+                    // Refresh the table view
+                    setCustomersTable(customersTable, customerIdCol, customerNameCol, addressCol, postalCodeCol, phoneCol, createDateCol, createdByCol, lastUpdateCol, lastUpdatedByCol, divisionIdCol);
+
+                }
+            }else {
+                Alert confirmDelete = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmDelete.setTitle("Confirm Delete");
+                confirmDelete.setHeaderText("You are about to delete the selected customer.");
+                confirmDelete.setContentText("Do you want to proceed?");
+                Optional<ButtonType> result = confirmDelete.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    // Delete the customer and all associated appointments
+                    Customers.deleteCustomer(selectedCustomer.getCustomerID());
+                    // Refresh the table view
+                    setCustomersTable(customersTable, customerIdCol, customerNameCol, addressCol, postalCodeCol, phoneCol, createDateCol, createdByCol, lastUpdateCol, lastUpdatedByCol, divisionIdCol);
+                }
             }
         }
     }

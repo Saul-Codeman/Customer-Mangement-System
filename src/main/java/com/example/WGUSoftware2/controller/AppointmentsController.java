@@ -102,11 +102,18 @@ public class AppointmentsController implements Initializable {
      */
     @FXML
     void deleteHandler(ActionEvent event) throws SQLException {
+        Appointments selectedAppointment = appointmentTable.getSelectionModel().getSelectedItem();
         if (appointmentTable.getSelectionModel().getSelectedItem() == null){
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select an appointment to delete");
             alert.showAndWait();
         }else {
-            Appointments.deleteAppointment(appointmentTable.getSelectionModel().getSelectedItem().getAppointmentID());
+            Appointments.deleteAppointment(selectedAppointment.getAppointmentID());
+            // display a message dialog box to confirm deletion and show appointment details
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Appointment Deleted");
+            alert.setHeaderText("Appointment " + selectedAppointment.getAppointmentID() + " has been deleted.");
+            alert.setContentText("Type: " + selectedAppointment.getType());
+            alert.showAndWait();
             if (sortWeekRB.isSelected()){
                 Appointments.sortWeek(appointmentTable, appointmentIdCol, titleCol, descriptionCol, locationCol, typeCol, startDateCol, startTimeCol, endDateCol, endTimeCol, customerIdCol, userIdCol, contactIdCol);
             }else if (sortMonthRB.isSelected()){

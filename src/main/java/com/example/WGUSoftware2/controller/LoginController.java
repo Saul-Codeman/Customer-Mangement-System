@@ -60,6 +60,9 @@ public class LoginController implements Initializable {
      * @throws IOException catches RUNTIME ERROR
      */
     public void handleLogin(ActionEvent event) throws IOException, SQLException {
+        Locale userLocale = Locale.getDefault();
+        ResourceBundle resources = ResourceBundle.getBundle("com/example/WGUSoftware2/language_property/login", userLocale);
+
         String username = usernameField.getText();
         String password = passwordField.getText();
         String selectedLanguage = languageDropDown.getSelectionModel().getSelectedItem();
@@ -71,7 +74,8 @@ public class LoginController implements Initializable {
         // Else give them an error and they remain on the same page
         else {
             LoginLogger.log(username, false);
-            errorLabel.setText("Invalid username or password");
+            errorLabel.setText(resources.getString("errorLabel"));
+            errorLabel.setVisible(true);
         }
     }
     @FXML
@@ -83,6 +87,7 @@ public class LoginController implements Initializable {
 
     void updateLanguage(){
         ResourceBundle resources = ResourceBundle.getBundle("com/example/WGUSoftware2/language_property/login", Locale.getDefault());
+        errorLabel.setVisible(false);
         loginLbl.setText(resources.getString("loginLabel"));
         usernameLbl.setText(resources.getString("usernameLabel"));
         passwordLbl.setText(resources.getString("passwordLabel"));

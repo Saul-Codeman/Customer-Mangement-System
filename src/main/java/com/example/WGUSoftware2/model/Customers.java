@@ -214,6 +214,18 @@ public class Customers {
         }
     }
 
+    public static void deleteCustomerAppointments(Integer customerId) throws SQLException {
+        String sql = "DELETE FROM appointments WHERE Customer_ID=?";
+        try {
+            PreparedStatement ps = Database.connection.prepareStatement(sql);
+            ps.setInt(1, customerId);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void setCustomersTable(TableView<Customers> customersTable, TableColumn<Customers, Integer> customersIdCol, TableColumn<Customers, String> nameCol, TableColumn<Customers, String> addressCol, TableColumn<Customers, String> postalCol, TableColumn<Customers, String> phoneCol, TableColumn<Customers, ZonedDateTime> createDateCol, TableColumn<Customers, String> createdByCol, TableColumn<Customers, Timestamp> lastUpdateCol, TableColumn<Customers, String> lastUpdateByCol, TableColumn<Customers, Integer> divisionIdCol) throws SQLException {
         String sql = "SELECT * FROM customers";
         ObservableList<Customers> data = FXCollections.observableArrayList();
