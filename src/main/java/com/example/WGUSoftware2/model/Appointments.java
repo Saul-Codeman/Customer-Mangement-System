@@ -179,9 +179,10 @@ public class Appointments {
     public static void insertAppointment(String title, String description, String location, String type, Integer contactID, Integer customerID, Integer userID, ZonedDateTime startDate, ZonedDateTime endDate) throws SQLException {
         // Data entered by PC and user
         String createBy = "user";
-        ZonedDateTime createDate = TimeZoneConverter.localToUtc(ZonedDateTime.now().toLocalDateTime());
+        Instant now = Instant.now();
+        Instant createDate = now;
         String lastUpdateBy = "user";
-        Timestamp lastUpdateDateTime = Timestamp.valueOf(LocalDateTime.now().atZone(UserSessionInfo.getCurrentUserTimeZone()).withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime());
+        Instant lastUpdate = now;
 
         // Data from appointment
         String sql = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Create_Date, Created_By, Last_Update, Last_Updated_By, Customer_ID, User_ID, Contact_ID) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -192,9 +193,9 @@ public class Appointments {
         ps.setString(4, type);
         ps.setTimestamp(5, Timestamp.from(startDate.toInstant()));
         ps.setTimestamp(6, Timestamp.from(endDate.toInstant()));
-        ps.setTimestamp(7, Timestamp.valueOf(createDate.toLocalDateTime()));
+        ps.setTimestamp(7, Timestamp.from(createDate));
         ps.setString(8, createBy);
-        ps.setTimestamp(9, lastUpdateDateTime);
+        ps.setTimestamp(9, Timestamp.from(lastUpdate));
         ps.setString(10, lastUpdateBy);
         ps.setInt(11, customerID);
         ps.setInt(12, userID);
