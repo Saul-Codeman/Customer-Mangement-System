@@ -7,8 +7,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Main class of the scheduler application.
+ * @author Sean Roberts
+ */
 public class Main extends Application {
 
+    /**
+     * Loads the stage to display on screen
+     * @param primaryStage login page on screen
+     * @throws Exception catches RUNTIME ERROR
+     */
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("view/login.fxml"));
@@ -18,6 +27,10 @@ public class Main extends Application {
     }
 
 
+    /**
+     * Start of application and opens and closes database connection
+     * @param args arguments passed to application
+     */
     public static void main(String[] args) {
         Database.makeConnection();
         launch(args);

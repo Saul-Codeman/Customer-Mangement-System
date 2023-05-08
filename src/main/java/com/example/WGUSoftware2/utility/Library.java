@@ -22,6 +22,9 @@ import java.time.temporal.Temporal;
 import java.util.Locale;
 import java.util.TimeZone;
 
+/**
+ * Library class the handle common functions outside of other classes
+ */
 public class Library {
 
 
@@ -35,6 +38,12 @@ public class Library {
     public static final String modifyCustomerUrl = "/com/example/WGUSoftware2/view/modifyCustomer.fxml";
     public static final String reportsUrl = "/com/example/WGUSoftware2/view/reports.fxml";
 
+    /**
+     * Switches screen to the specific url
+     * @param event action on a button
+     * @param url url of the page to switch to
+     * @throws IOException catches RUNTIME ERROR
+     */
     public static void switchScreen(ActionEvent event, String url) throws IOException {
         Stage stage = (Stage)((Button)event.getSource()).getScene().getWindow();
         Parent scene = FXMLLoader.load(Library.class.getResource(url));
@@ -42,6 +51,11 @@ public class Library {
         stage.show();
     }
 
+    /**
+     * Gets all american divisions
+     * @return observable list
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static ObservableList<String> getAmericanDivisions() throws SQLException {
         String sql = "SELECT DIVISION FROM first_level_divisions WHERE Division_ID <= 54";
         PreparedStatement ps = Database.connection.prepareStatement(sql);
@@ -54,6 +68,11 @@ public class Library {
         ps.close();
         return divisions;
     }
+    /**
+     * Gets all canadian divisions
+     * @return observable list
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static ObservableList<String> getCanadianDivisions() throws SQLException {
         String sql = "SELECT DIVISION FROM first_level_divisions WHERE Division_ID BETWEEN 60 AND 72";
         PreparedStatement ps = Database.connection.prepareStatement(sql);
@@ -67,6 +86,11 @@ public class Library {
         return divisions;
     }
 
+    /**
+     * Gets all UK divisions
+     * @return observable list
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static ObservableList<String> getUKDivisions() throws SQLException {
         String sql = "SELECT DIVISION FROM first_level_divisions WHERE Division_ID BETWEEN 101 AND 104";
         PreparedStatement ps = Database.connection.prepareStatement(sql);
@@ -80,6 +104,12 @@ public class Library {
         return divisions;
     }
 
+    /**
+     * Gets all country divisions
+     * @param country country to get divisions for
+     * @return observable list
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static ObservableList<String> getCountryDivisions(String country) throws SQLException {
         return switch (country) {
             case "Canada" -> getCanadianDivisions();
@@ -89,6 +119,11 @@ public class Library {
         };
     }
 
+    /**
+     * Gets all contact IDs
+     * @return observable list
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static ObservableList<String> getContactIDs() throws SQLException {
         String sql = "SELECT Contact_ID FROM contacts";
         PreparedStatement ps = Database.connection.prepareStatement(sql);
@@ -102,6 +137,11 @@ public class Library {
         return contactIDs;
     }
 
+    /**
+     * Gets all appointment types
+     * @return observable list
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static ObservableList<String> getTypes() throws SQLException {
         String sql = "SELECT DISTINCT Type FROM appointments";
         PreparedStatement ps = Database.connection.prepareStatement(sql);
@@ -115,6 +155,10 @@ public class Library {
         return types;
     }
 
+    /**
+     * Checks for upcoming appointments in the next 15 minutes
+     * @param upcomingAppointmentsLbl displays whether or not appointments are coming up
+     */
     public static void checkUpcomingAppointments(Label upcomingAppointmentsLbl) {
         ObservableList<Appointments> appointmentsWithin15Mins = getAppointmentsWithin15Mins();
         if (!appointmentsWithin15Mins.isEmpty()){
@@ -127,6 +171,10 @@ public class Library {
 
     }
 
+    /**
+     * Gets all appointments within 15 minutes
+     * @return observable list
+     */
     private static ObservableList<Appointments> getAppointmentsWithin15Mins(){
         String sql = "SELECT * FROM appointments WHERE TIMESTAMPDIFF(MINUTE, NOW(), Start) BETWEEN 0 AND 15";
         ObservableList<Appointments> appointments = FXCollections.observableArrayList();
@@ -163,6 +211,10 @@ public class Library {
         return appointments;
     }
 
+    /**
+     * Shows an alert for upcoming appointments with IDs, dates, and times
+     * @param appointmentsWithin15Mins observable list of appointments within 15 minutes
+     */
     private static void showAppointmentAlert(ObservableList<Appointments> appointmentsWithin15Mins) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
@@ -179,6 +231,9 @@ public class Library {
         }
     }
 
+    /**
+     * Shows an alert if there are no appointments
+     */
     private static void showNoAppointmentAlert(){
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Upcoming Appointment");
