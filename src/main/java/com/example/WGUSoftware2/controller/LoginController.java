@@ -111,7 +111,12 @@ public class LoginController implements Initializable {
     public void populateLanguageDropDown(){
         ObservableList<String> languages = FXCollections.observableArrayList("English", "Français");
         languageDropDown.setItems(languages);
-        languageDropDown.getSelectionModel().selectFirst();
+        Locale userLocale = Locale.getDefault();
+        if (userLocale.getLanguage().equals(Locale.FRENCH.getLanguage())) {
+            languageDropDown.getSelectionModel().select("Français");
+        } else {
+            languageDropDown.getSelectionModel().select("English");
+        }
     }
 
     /**

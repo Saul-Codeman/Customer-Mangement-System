@@ -488,11 +488,21 @@ public class Appointments {
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
         locationCol.setCellValueFactory(new PropertyValueFactory<>("location"));
         typeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+        /**
+         * This lambda expression is responsible for setting the cell value factory for the startTimeCol column.
+         * It takes a cellData object, extracts the startDateTime, formats it as a string using the "hh:mm a" pattern,
+         * and returns a SimpleObjectProperty containing the formatted start time.
+         */
         startTimeCol.setCellValueFactory(cellData -> {
             ZonedDateTime start1 = cellData.getValue().getStartDateTime();
             String startTime = start1.format(DateTimeFormatter.ofPattern("hh:mm a"));
             return new SimpleObjectProperty(startTime);
         });
+        /**
+         * This lambda expression is responsible for setting the cell value factory for the endTimeCol column.
+         * It takes a cellData object, extracts the endDateTime, formats it as a string using the "hh:mm a" pattern,
+         * and returns a SimpleObjectProperty containing the formatted end time.
+         */
         endTimeCol.setCellValueFactory(cellData -> {
             ZonedDateTime end1 = cellData.getValue().getEndDateTime();
             String endTime = end1.format(DateTimeFormatter.ofPattern("hh:mm a"));
@@ -591,12 +601,12 @@ public class Appointments {
         // Create PreparedStatement object and set parameters
         PreparedStatement ps = Database.connection.prepareStatement(sql);
         ps.setInt(1, customerID);
-        ps.setTimestamp(2, Timestamp.valueOf(startDateTime.toLocalDateTime()));
-        ps.setTimestamp(3, Timestamp.valueOf(endDateTime.toLocalDateTime()));
-        ps.setTimestamp(4, Timestamp.valueOf(startDateTime.toLocalDateTime()));
-        ps.setTimestamp(5, Timestamp.valueOf(endDateTime.toLocalDateTime()));
-        ps.setTimestamp(6, Timestamp.valueOf(startDateTime.toLocalDateTime()));
-        ps.setTimestamp(7, Timestamp.valueOf(endDateTime.toLocalDateTime()));
+        ps.setTimestamp(2, Timestamp.from(startDateTime.toInstant()));
+        ps.setTimestamp(3, Timestamp.from(endDateTime.toInstant()));
+        ps.setTimestamp(4, Timestamp.from(startDateTime.toInstant()));
+        ps.setTimestamp(5, Timestamp.from(endDateTime.toInstant()));
+        ps.setTimestamp(6, Timestamp.from(startDateTime.toInstant()));
+        ps.setTimestamp(7, Timestamp.from(endDateTime.toInstant()));
 
         // Execute query and get result set
         ResultSet rs = ps.executeQuery();
@@ -621,12 +631,12 @@ public class Appointments {
         // Create PreparedStatement object and set parameters
         PreparedStatement ps = Database.connection.prepareStatement(sql);
         ps.setInt(1, customerID);
-        ps.setTimestamp(2, Timestamp.valueOf(startDateTime.toLocalDateTime()));
-        ps.setTimestamp(3, Timestamp.valueOf(endDateTime.toLocalDateTime()));
-        ps.setTimestamp(4, Timestamp.valueOf(startDateTime.toLocalDateTime()));
-        ps.setTimestamp(5, Timestamp.valueOf(endDateTime.toLocalDateTime()));
-        ps.setTimestamp(6, Timestamp.valueOf(startDateTime.toLocalDateTime()));
-        ps.setTimestamp(7, Timestamp.valueOf(endDateTime.toLocalDateTime()));
+        ps.setTimestamp(2, Timestamp.from(startDateTime.toInstant()));
+        ps.setTimestamp(3, Timestamp.from(endDateTime.toInstant()));
+        ps.setTimestamp(4, Timestamp.from(startDateTime.toInstant()));
+        ps.setTimestamp(5, Timestamp.from(endDateTime.toInstant()));
+        ps.setTimestamp(6, Timestamp.from(startDateTime.toInstant()));
+        ps.setTimestamp(7, Timestamp.from(endDateTime.toInstant()));
         ps.setInt(8, appointmentID);
 
         // Execute query and get result set

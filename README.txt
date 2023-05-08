@@ -18,6 +18,7 @@ as well as schedule, modify, and cancel appointments.
 - TimeZone support
 - JavaFX and UI
 - Git and Github
+- At least 2 lambda expressions (AddCustomerController and Appointments model)
 
 ## Versions Used
 - IDE: IntelliJ Community [IntelliJ IDEA 2021.1.3 (Community Edition)

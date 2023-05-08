@@ -106,6 +106,12 @@ public class CustomerController implements Initializable {
                     // Delete the customer and all associated appointments
                     Customers.deleteCustomerAppointments(selectedCustomer.getCustomerID());
                     Customers.deleteCustomer(selectedCustomer.getCustomerID());
+                    // display a message dialog box to confirm deletion and show customer details
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Customer Deleted");
+                    alert.setHeaderText("Customer ID: " + selectedCustomer.getCustomerID() + " has been deleted.");
+                    alert.setContentText("Name: " + selectedCustomer.getCustomerName());
+                    alert.showAndWait();
                     // Refresh the table view
                     setCustomersTable(customersTable, customerIdCol, customerNameCol, addressCol, postalCodeCol, phoneCol, createDateCol, createdByCol, lastUpdateCol, lastUpdatedByCol, divisionIdCol);
 
@@ -119,6 +125,12 @@ public class CustomerController implements Initializable {
                 if (result.isPresent() && result.get() == ButtonType.OK) {
                     // Delete the customer and all associated appointments
                     Customers.deleteCustomer(selectedCustomer.getCustomerID());
+                    // display a message dialog box to confirm deletion and show customer details
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Customer Deleted");
+                    alert.setHeaderText("Customer ID: " + selectedCustomer.getCustomerID() + " has been deleted.");
+                    alert.setContentText("Name: " + selectedCustomer.getCustomerName());
+                    alert.showAndWait();
                     // Refresh the table view
                     setCustomersTable(customersTable, customerIdCol, customerNameCol, addressCol, postalCodeCol, phoneCol, createDateCol, createdByCol, lastUpdateCol, lastUpdatedByCol, divisionIdCol);
                 }
