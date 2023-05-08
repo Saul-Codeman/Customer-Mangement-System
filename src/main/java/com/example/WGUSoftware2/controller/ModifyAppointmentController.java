@@ -19,6 +19,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 public class ModifyAppointmentController implements Initializable {
+
+    private Appointments selectedAppointment;
+
     @FXML
     private TextField appointmentIdTxt;
 
@@ -111,10 +114,22 @@ public class ModifyAppointmentController implements Initializable {
             LocalDateTime endDateTimeEst = TimeZoneConverter.localToEst(endDateTime);
 
 
-            // Check if startDateTime is in the past
             ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/New_York"));
 
-
+            // Check if appointment has changed
+            if (selectedAppointment.getTitle().equals(title)
+                    && selectedAppointment.getDescription().equals(description)
+                    && selectedAppointment.getLocation().equals(location)
+                    && selectedAppointment.getType().equals(type)
+                    && selectedAppointment.getStartDateTime().equals(startDateTime.atZone(ZoneId.systemDefault()))
+                    && selectedAppointment.getEndDateTime().equals(endDateTime.atZone(ZoneId.systemDefault()))
+                    && selectedAppointment.getCustomerID() == customerID
+                    && selectedAppointment.getUserID() == userID
+                    && selectedAppointment.getContactID() == contactID) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "No changes made to the appointment.");
+                alert.showAndWait();
+                return;
+            }
             // Check if startTime and endTime are within business hours
             if (startDateTimeEst.isBefore(ChronoLocalDateTime.from(now))) {
                 // Display an error message to the user
@@ -187,6 +202,7 @@ public class ModifyAppointmentController implements Initializable {
 
     public void sendAppointment(Appointments appointment) throws SQLException {
         Appointments.setAppointmentFields(appointment, appointmentIdTxt, titleTxt, descriptionTxt, locationTxt, typeTxt, contactIdCB, customerIdCB, userIdCB, startDateDP, endDateDP, startTimeSpinner, endTimeSpinner);
+        selectedAppointment = appointment;
     }
 
     @Override
