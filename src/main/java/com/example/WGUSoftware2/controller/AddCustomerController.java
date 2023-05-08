@@ -109,7 +109,8 @@ public class AddCustomerController implements Initializable {
 
         divisionDropDown.setDisable(true);
         /**
-         * Lambda expression to set an action on an event to set the division dropdown box based on the country dropdown value
+         * Lambda expression to set an action on an event to set the division dropdown box based on the country dropdown value.
+         * This is a very specific method, so it is flexible and useful to perform using a lambda expression.
          */
         countryDropDown.setOnAction(event -> {
             if (countryDropDown.getSelectionModel().getSelectedItem() != null) {
