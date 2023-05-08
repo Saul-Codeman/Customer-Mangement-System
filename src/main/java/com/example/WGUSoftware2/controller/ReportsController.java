@@ -19,6 +19,7 @@ import java.util.ResourceBundle;
 
 /**
  * Credit to Ayun Daywhea for some of the design aspects of the reports form.
+ * Controller that allows users to view reports of important business aspects for appointments and customers
  */
 public class ReportsController implements Initializable {
 

@@ -19,6 +19,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Controller that allows users to modify appointments in the database
+ */
 public class ModifyAppointmentController implements Initializable {
 
     private Appointments selectedAppointment;

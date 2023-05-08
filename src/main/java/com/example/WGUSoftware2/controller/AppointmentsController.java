@@ -18,6 +18,9 @@ import java.util.ResourceBundle;
 
 import static com.example.WGUSoftware2.model.Appointments.setAppointmentsTable;
 
+/**
+ * Controller that displays all appointments to the user and allows the user to add, modify, or delete appointments
+ */
 public class AppointmentsController implements Initializable {
 
     // Handlers

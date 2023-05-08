@@ -22,6 +22,9 @@ import java.util.ResourceBundle;
 import static com.example.WGUSoftware2.model.Customers.hasAppointment;
 import static com.example.WGUSoftware2.model.Customers.setCustomersTable;
 
+/**
+ * Controller that allows users to view all customers and add, modify, or delete customers
+ */
 public class CustomerController implements Initializable {
 
     // Handlers

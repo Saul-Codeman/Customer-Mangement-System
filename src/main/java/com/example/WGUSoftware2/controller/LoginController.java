@@ -18,6 +18,9 @@ import java.time.ZoneId;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * Controller that allows the user to login and select a language preference
+ */
 public class LoginController implements Initializable {
 
     @FXML

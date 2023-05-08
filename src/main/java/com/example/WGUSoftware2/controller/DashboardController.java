@@ -10,6 +10,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controller that allows the user to choose which page to go to
+ * FUTURE ENHANCEMENT: Allow for users to view important flow charts or calender schedules.
+ */
 public class DashboardController implements Initializable {
 
     @FXML

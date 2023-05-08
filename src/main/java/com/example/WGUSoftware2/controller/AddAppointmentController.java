@@ -19,6 +19,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for adding appointments to the database
+ */
 public class AddAppointmentController implements Initializable {
     @FXML
     private TextField appointmentIdTxt;

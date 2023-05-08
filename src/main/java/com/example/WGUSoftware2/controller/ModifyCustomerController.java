@@ -18,6 +18,9 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Controller that allows users to modify customers in the database
+ */
 public class ModifyCustomerController implements Initializable {
     @FXML
     private TextField addressTxt;

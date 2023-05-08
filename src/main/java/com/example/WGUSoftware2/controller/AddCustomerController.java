@@ -18,6 +18,9 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * Controller used to add customers to the database
+ */
 public class AddCustomerController implements Initializable {
     @FXML
     private TextField addressTxt;
