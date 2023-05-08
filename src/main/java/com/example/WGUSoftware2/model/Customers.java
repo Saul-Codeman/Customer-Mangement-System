@@ -24,6 +24,9 @@ import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Customers class that contains functions for the customer and makes database calls
+ */
 public class Customers {
 
 
@@ -38,6 +41,19 @@ public class Customers {
     private String lastUpdatedBy;
     private Integer divisionID;
 
+    /**
+     * Customers class constructor
+     * @param customerID integer primary key - unique auto generated customer ID
+     * @param customerName varchar - name of customer
+     * @param address varchar - address of customer
+     * @param postalCode varchar - postal code of customer
+     * @param phone varchar - customer phone number
+     * @param createDate datetime - date customer was created
+     * @param createdBy varchar - user who created customer
+     * @param lastUpdate datetime - last time customer was created or updated
+     * @param lastUpdatedBy varchar - user who last updated customer
+     * @param divisionID integer foreign key - division ID of customer
+     */
     public Customers(Integer customerID, String customerName, String address, String postalCode, String phone, ZonedDateTime createDate, String createdBy, Timestamp lastUpdate, String lastUpdatedBy, Integer divisionID) {
         this.customerID = customerID;
         this.customerName = customerName;
@@ -51,87 +67,173 @@ public class Customers {
         this.divisionID = divisionID;
     }
 
+    /**
+     * Getter - customer ID.
+     * @return ID of the customer.
+     */
     public Integer getCustomerID() {
         return customerID;
     }
 
+    /**
+     * Setter - customer ID.
+     * @param customerID the customer ID to set.
+     */
     public void setCustomerID(Integer customerID) {
         this.customerID = customerID;
     }
 
+    /**
+     * Getter - customer name.
+     * @return name of the customer.
+     */
     public String getCustomerName() {
         return customerName;
     }
 
+    /**
+     * Setter - customer name.
+     * @param customerName the customer name to set.
+     */
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
     }
 
+    /**
+     * Getter - customer address.
+     * @return address of the customer.
+     */
     public String getAddress() {
         return address;
     }
 
+    /**
+     * Setter - customer address.
+     * @param address the customer address to set.
+     */
     public void setAddress(String address) {
         this.address = address;
     }
 
+    /**
+     * Getter - customer postal code.
+     * @return postal code of the customer.
+     */
     public String getPostalCode() {
         return postalCode;
     }
 
+    /**
+     * Setter - customer postal code.
+     * @param postalCode the customer postal code to set.
+     */
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
 
+    /**
+     * Getter - customer phone.
+     * @return phone number of the customer.
+     */
     public String getPhone() {
         return phone;
     }
 
+    /**
+     * Setter - customer phone.
+     * @param phone the customer phone number to set.
+     */
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
+    /**
+     * Getter - customer creation date.
+     * @return creation date of the customer.
+     */
     public ZonedDateTime getCreateDate() {
         return createDate;
     }
 
+    /**
+     * Setter - customer creation date.
+     * @param createDate the customer creation date to set.
+     */
     public void setCreateDate(ZonedDateTime createDate) {
         this.createDate = createDate;
     }
 
+    /**
+     * Getter - customer created by.
+     * @return the name of the user who created the customer.
+     */
     public String getCreatedBy() {
         return createdBy;
     }
 
+    /**
+     * Setter - customer created by.
+     * @param createdBy the name of the user who created the customer.
+     */
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
+    /**
+     * Getter - customer last update.
+     * @return last update timestamp of the customer.
+     */
     public Timestamp getLastUpdate() {
         return lastUpdate;
     }
 
+    /**
+     * Setter - customer last update.
+     * @param lastUpdate the last update timestamp to set.
+     */
     public void setLastUpdate(Timestamp lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
 
+    /**
+     * Getter - customer last updated by.
+     * @return the name of the user who last updated the customer.
+     */
     public String getLastUpdatedBy() {
         return lastUpdatedBy;
     }
 
+    /**
+     * Setter - customer last updated by.
+     * @param lastUpdatedBy the name of the user who last updated the customer.
+     */
     public void setUpdatedBy(String lastUpdatedBy) {
         this.lastUpdatedBy = lastUpdatedBy;
     }
 
+    /**
+     * Getter - customer division ID.
+     * @return division ID of the customer.
+     */
     public Integer getDivisionID() {
         return divisionID;
     }
 
+    /**
+     * Setter - customer division ID.
+     * @param divisionID the customer division ID to set.
+     */
     public void setDivisionID(Integer divisionID) {
         this.divisionID = divisionID;
     }
 
 
+    /**
+     * Search for the division ID given the name of the division
+     * @param division division name to search
+     * @return the division ID
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static int searchDivisionID(String division) throws SQLException {
         int divisionID = 0;
         String sql = "SELECT Division_ID FROM first_level_divisions WHERE Division = ?";
@@ -144,6 +246,15 @@ public class Customers {
         return divisionID;
     }
 
+    /**
+     * Insert the customer into the database
+     * @param customerName name of the customer
+     * @param address address
+     * @param postalCode postal code
+     * @param phone phone number
+     * @param divisionID division ID
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static void insertCustomer(String customerName, String address, String postalCode, String phone, int divisionID) throws SQLException {
 
         // Data entered by PC and user
@@ -175,6 +286,16 @@ public class Customers {
         }
     }
 
+    /**
+     * Updates the customer at the given customer ID number
+     * @param customerID ID of the customer to be updated
+     * @param customerName name of the customer
+     * @param address address
+     * @param postalCode postal code
+     * @param phone phone number
+     * @param divisionID division ID
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static void updateCustomer(Integer customerID, String customerName, String address, String postalCode, String phone, int divisionID) throws SQLException {
 
         // Data input by PC
@@ -201,6 +322,11 @@ public class Customers {
         }
     }
 
+    /**
+     * Deletes the customer from the database at the given customer ID
+     * @param customerID ID of customer to be deleted
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static void deleteCustomer(Integer customerID) throws SQLException {
         String sql = "DELETE FROM customers WHERE Customer_ID = ?";
         PreparedStatement ps = Database.connection.prepareStatement(sql);
@@ -214,6 +340,11 @@ public class Customers {
         }
     }
 
+    /**
+     * Deletes the appointments of the customer at the given customer ID
+     * @param customerId ID of the customer to delete from
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static void deleteCustomerAppointments(Integer customerId) throws SQLException {
         String sql = "DELETE FROM appointments WHERE Customer_ID=?";
         try {
@@ -226,6 +357,21 @@ public class Customers {
         }
     }
 
+    /**
+     * Sets the customers tableview with all of the customers from the database
+     * @param customersTable table view
+     * @param customersIdCol customer ID col
+     * @param nameCol customer name col
+     * @param addressCol address col
+     * @param postalCol postal col
+     * @param phoneCol phone number col
+     * @param createDateCol create date col
+     * @param createdByCol created by col
+     * @param lastUpdateCol last update col
+     * @param lastUpdateByCol last updated by col
+     * @param divisionIdCol division ID col
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static void setCustomersTable(TableView<Customers> customersTable, TableColumn<Customers, Integer> customersIdCol, TableColumn<Customers, String> nameCol, TableColumn<Customers, String> addressCol, TableColumn<Customers, String> postalCol, TableColumn<Customers, String> phoneCol, TableColumn<Customers, ZonedDateTime> createDateCol, TableColumn<Customers, String> createdByCol, TableColumn<Customers, Timestamp> lastUpdateCol, TableColumn<Customers, String> lastUpdateByCol, TableColumn<Customers, Integer> divisionIdCol) throws SQLException {
         String sql = "SELECT * FROM customers";
         ObservableList<Customers> data = FXCollections.observableArrayList();
@@ -286,6 +432,14 @@ public class Customers {
         divisionIdCol.setCellValueFactory(new PropertyValueFactory<>("divisionID"));
     }
 
+    /**
+     * Takes the selected customer from the table view to the modify customer page
+     * @param customerController controller where customer was selected
+     * @param customersTableView table where customer was selected from
+     * @param event action on a button
+     * @throws IOException catches RUNTIME ERROR
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static void modifySelectedCustomer(CustomerController customerController, TableView<Customers> customersTableView, ActionEvent event) throws IOException, SQLException {
         // Get the result set of the selected item
         Integer customerID = customersTableView.getSelectionModel().getSelectedItem().getCustomerID();
@@ -330,6 +484,18 @@ public class Customers {
 
     }
 
+    /**
+     * Sets the customer fields on the modify and add customer pages
+     * @param customer customer to set fields for
+     * @param customerID customer ID txt
+     * @param customerName customer name txt
+     * @param address customer address txt
+     * @param postalCode postal code txt
+     * @param phone phone number txt
+     * @param country country CB
+     * @param division division CB
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static void setCustomerFields(Customers customer, TextField customerID, TextField customerName, TextField address, TextField postalCode, TextField phone, ComboBox<String> country, ComboBox<String> division) throws SQLException {
         // Set Fields equal to value of result set
         customerID.setText(String.valueOf(customer.getCustomerID()));
@@ -358,6 +524,12 @@ public class Customers {
         }
     }
 
+    /**
+     * Check if the customer at the customerID has an appointment
+     * @param customerID id of the customer to check
+     * @return boolean
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static boolean hasAppointment(int customerID) throws SQLException {
         String sql = "SELECT * FROM appointments WHERE Customer_ID = ?";
         PreparedStatement ps = Database.connection.prepareStatement(sql);
@@ -370,6 +542,22 @@ public class Customers {
         return false;
     }
 
+    /**
+     * Sets the table based on customer type
+     * @param type type selected to sort by
+     * @param customersTable table to set
+     * @param customersIdCol customer ID col
+     * @param nameCol customer name col
+     * @param addressCol address col
+     * @param postalCol postal col
+     * @param phoneCol phone number col
+     * @param createDateCol create date col
+     * @param createdByCol created by col
+     * @param lastUpdateCol last update col
+     * @param lastUpdateByCol last updated by col
+     * @param divisionIdCol division ID col
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static void setCustomerType(String type, TableView<Customers> customersTable, TableColumn<Customers, Integer> customersIdCol, TableColumn<Customers, String> nameCol, TableColumn<Customers, String> addressCol, TableColumn<Customers, String> postalCol, TableColumn<Customers, String> phoneCol, TableColumn<Customers, ZonedDateTime> createDateCol, TableColumn<Customers, String> createdByCol, TableColumn<Customers, Timestamp> lastUpdateCol, TableColumn<Customers, String> lastUpdateByCol, TableColumn<Customers, Integer> divisionIdCol) throws SQLException {
         String sql = "SELECT * FROM customers JOIN appointments ON customers.Customer_ID = appointments.Customer_ID WHERE Type = ?";
         ObservableList<Customers> data = FXCollections.observableArrayList();
@@ -431,6 +619,11 @@ public class Customers {
 
     }
 
+    /**
+     * Gets all customer IDs from the database
+     * @return observable list
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public static ObservableList<String> getCustomerIDs() throws SQLException {
         String sql = "SELECT Customer_ID FROM customers";
         PreparedStatement ps = Database.connection.prepareStatement(sql);
@@ -445,20 +638,21 @@ public class Customers {
     }
 
     /**
-     * Fixed a logical error with month being required to be an int for the SQL string.
-     * @param month
-     * @param customersTable
-     * @param customersIdCol
-     * @param nameCol
-     * @param addressCol
-     * @param postalCol
-     * @param phoneCol
-     * @param createDateCol
-     * @param createdByCol
-     * @param lastUpdateCol
-     * @param lastUpdateByCol
-     * @param divisionIdCol
-     * @throws SQLException
+     * Function that sorted customers based on the month of their appointments.
+     * Fixed a LOGICAL ERROR with month being required to be an int for the SQL string.
+     * @param month month to sort by
+     * @param customersTable table to place customers in
+     * @param customersIdCol customer ID col
+     * @param nameCol customer name col
+     * @param addressCol address col
+     * @param postalCol postal col
+     * @param phoneCol phone number col
+     * @param createDateCol create date col
+     * @param createdByCol created by col
+     * @param lastUpdateCol last update col
+     * @param lastUpdateByCol last updated by col
+     * @param divisionIdCol division ID col
+     * @throws SQLException catches RUNTIME ERROR
      */
     public static void sortMonth(String month, TableView<Customers> customersTable, TableColumn<Customers, Integer> customersIdCol, TableColumn<Customers, String> nameCol, TableColumn<Customers, String> addressCol, TableColumn<Customers, String> postalCol, TableColumn<Customers, String> phoneCol, TableColumn<Customers, ZonedDateTime> createDateCol, TableColumn<Customers, String> createdByCol, TableColumn<Customers, Timestamp> lastUpdateCol, TableColumn<Customers, String> lastUpdateByCol, TableColumn<Customers, Integer> divisionIdCol) throws SQLException {
         String sql = "SELECT DISTINCT * FROM customers JOIN appointments ON customers.Customer_ID = appointments.Customer_ID WHERE MONTH(appointments.Start) = ? GROUP BY customers.Customer_ID ORDER BY appointments.Start ASC";
