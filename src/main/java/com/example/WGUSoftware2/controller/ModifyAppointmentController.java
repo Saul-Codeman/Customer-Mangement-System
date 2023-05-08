@@ -116,6 +116,12 @@ public class ModifyAppointmentController implements Initializable {
 
             ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/New_York"));
 
+            // Business start and end time
+            LocalTime businessStart = LocalTime.of(8, 0);
+            LocalDateTime businessStartDateTime = startDateTimeEst.with(businessStart);
+            LocalTime businessEnd = LocalTime.of(22, 0);
+            LocalDateTime businessEndDateTime = startDateTimeEst.with(businessEnd);
+
             // Check if appointment has changed
             if (selectedAppointment.getTitle().equals(title)
                     && selectedAppointment.getDescription().equals(description)
@@ -148,6 +154,17 @@ public class ModifyAppointmentController implements Initializable {
                 alert.setTitle("Error");
                 alert.setHeaderText("Invalid appointment time");
                 alert.setContentText("Appointments can only be scheduled between 8:00 a.m. and 10:00 p.m. EST, including weekends.");
+                alert.showAndWait();
+                return; // Exit the method without saving the appointment
+            }
+
+            // Check if appointment spans across a business day
+            if (startDateTimeEst.isBefore(businessStartDateTime) || endDateTimeEst.isAfter(businessEndDateTime)){
+                // Display an error message to the user
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Invalid appointment time");
+                alert.setContentText("Appointments cannot span across days.");
                 alert.showAndWait();
                 return; // Exit the method without saving the appointment
             }

@@ -102,6 +102,12 @@ public class AddAppointmentController implements Initializable {
             // Check if startDateTime is in the past
             ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/New_York"));
 
+            // Business start and end time
+            LocalTime businessStart = LocalTime.of(8, 0);
+            LocalDateTime businessStartDateTime = startDateTimeEst.with(businessStart);
+            LocalTime businessEnd = LocalTime.of(22, 0);
+            LocalDateTime businessEndDateTime = startDateTimeEst.with(businessEnd);
+
             if (startDateTimeEst.isBefore(ChronoLocalDateTime.from(now))) {
                 // Display an error message to the user
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -113,12 +119,23 @@ public class AddAppointmentController implements Initializable {
             }
 
             // Check if startDateTimeEst and endDateTimeEst are within business hours
-            if (startDateTimeEst.toLocalTime().isBefore(LocalTime.of(8, 0)) || endDateTimeEst.toLocalTime().isAfter(LocalTime.of(22, 0))) {
+            if (startDateTimeEst.toLocalTime().isBefore(businessStart) || endDateTimeEst.toLocalTime().isAfter(businessEnd)) {
                 // Display an error message to the user
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
                 alert.setHeaderText("Invalid appointment time");
                 alert.setContentText("Appointments can only be scheduled between 8:00 a.m. and 10:00 p.m. EST, including weekends.");
+                alert.showAndWait();
+                return; // Exit the method without saving the appointment
+            }
+
+            // Check if appointment spans across a business day
+            if (startDateTimeEst.isBefore(businessStartDateTime) || endDateTimeEst.isAfter(businessEndDateTime)){
+                // Display an error message to the user
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("Invalid appointment time");
+                alert.setContentText("Appointments cannot span across days.");
                 alert.showAndWait();
                 return; // Exit the method without saving the appointment
             }
