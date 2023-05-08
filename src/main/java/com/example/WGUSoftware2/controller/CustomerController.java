@@ -84,6 +84,7 @@ public class CustomerController implements Initializable {
     /**
      * Deletes the selected customer from the table after showing a confirmation box.
      * @param event action on a button
+     * @throws SQLException catches RUNTIME ERROR
      */
     @FXML
     void deleteHandler(ActionEvent event) throws SQLException {
@@ -137,6 +138,11 @@ public class CustomerController implements Initializable {
         Library.switchScreen(event, Library.loginUrl);
     }
 
+    /**
+     * Switches user to reports page
+     * @param event action on a button
+     * @throws IOException catches RUNTIME ERROR
+     */
     @FXML
     void reportsHandler(ActionEvent event) throws IOException {
         Library.switchScreen(event, Library.reportsUrl);
@@ -146,6 +152,7 @@ public class CustomerController implements Initializable {
      * Takes the selected customer and switches to the modify customer page.
      * @param event action on a button
      * @throws IOException catches RUNTIME ERROR
+     * @throws SQLException catches RUNTIME ERROR
      */
     @FXML
     void modifyHandler(ActionEvent event) throws IOException, SQLException {

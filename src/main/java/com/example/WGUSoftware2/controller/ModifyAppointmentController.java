@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.time.*;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ModifyAppointmentController implements Initializable {
@@ -66,7 +67,11 @@ public class ModifyAppointmentController implements Initializable {
     @FXML
     void cancelHandler(ActionEvent event) throws IOException {
         // Pop up a confirmation to confirm if the user wants to go back
-        Library.switchScreen(event, Library.appointmentsUrl);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "This will cancel any changes made, do you want to continue?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.isPresent() && result.get() == ButtonType.OK){
+            Library.switchScreen(event, Library.appointmentsUrl);
+        }
     }
 
     /**
@@ -217,11 +222,22 @@ public class ModifyAppointmentController implements Initializable {
         }
     }
 
+    /**
+     * Receives the selected appointment from the appointments page, and calls a function to set the appointment fields.
+     * This function also updates the selectedAppointment variable to be used in the modifyhandler.
+     * @param appointment appointment that is selected
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public void sendAppointment(Appointments appointment) throws SQLException {
         Appointments.setAppointmentFields(appointment, appointmentIdTxt, titleTxt, descriptionTxt, locationTxt, typeTxt, contactIdCB, customerIdCB, userIdCB, startDateDP, endDateDP, startTimeSpinner, endTimeSpinner);
         selectedAppointment = appointment;
     }
 
+    /**
+     * Initializes the form and sets up the spinners to be used for time
+     * @param url url
+     * @param resourceBundle bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -241,12 +257,20 @@ public class ModifyAppointmentController implements Initializable {
                     setWrapAround(true);
                 }
 
+                /**
+                 * decrements time spinner
+                 * @param steps increments of 15
+                 */
                 @Override
                 public void decrement(int steps) {
                     // Decrement the value by the specified number of steps
                     setValue(getValue().minusMinutes(steps * 15));
                 }
 
+                /**
+                 * increments time spinner
+                 * @param steps increments of 15
+                 */
                 @Override
                 public void increment(int steps) {
                     // Increment the value by the specified number of steps
@@ -262,12 +286,20 @@ public class ModifyAppointmentController implements Initializable {
                     setWrapAround(false);
                 }
 
+                /**
+                 * decrements time spinner
+                 * @param steps increments of 15
+                 */
                 @Override
                 public void decrement(int steps) {
                     // Decrement the value by the specified number of steps
                     setValue(getValue().minusMinutes(steps * 15));
                 }
 
+                /**
+                 * increments time spinner
+                 * @param steps increments of 15
+                 */
                 @Override
                 public void increment(int steps) {
                     // Increment the value by the specified number of steps

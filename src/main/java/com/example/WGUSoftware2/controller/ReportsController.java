@@ -115,22 +115,42 @@ public class ReportsController implements Initializable {
     @FXML
     private RadioButton contactScheduleRB;
 
+    /**
+     * Switches user to appointments page
+     * @param event action on a button
+     * @throws IOException catches RUNTIME ERROR
+     */
     @FXML
     void appointmentsHandler(ActionEvent event) throws IOException {
         Library.switchScreen(event, Library.appointmentsUrl);
     }
 
+    /**
+     * Switches user to customers page
+     * @param event action on a button
+     * @throws IOException catches RUNTIME ERROR
+     */
     @FXML
     void customersHandler(ActionEvent event) throws IOException {
         Library.switchScreen(event, Library.customersUrl);
     }
 
+    /**
+     * Switches user to login page
+     * @param event action on a button
+     * @throws IOException catches RUNTIME ERROR
+     */
     @FXML
     void logoutHandler(ActionEvent event) throws IOException {
         // End session and logout user
         Library.switchScreen(event, Library.loginUrl);
     }
 
+    /**
+     * Clears the previous table and CB values and allows the user to sort by contact ID from the CB
+     * @param event action on a radio button
+     * @throws SQLException catches RUNTIME ERROR
+     */
     @FXML
     void sortContact(ActionEvent event) throws SQLException {
 
@@ -149,6 +169,11 @@ public class ReportsController implements Initializable {
 
     }
 
+    /**
+     * Clears the previous table and CB values and allows the user to sort appointments by customer ID from the CB
+     * @param event action on a radio button
+     * @throws SQLException catches RUNTIME ERROR
+     */
     @FXML
     void sortAppointments(ActionEvent event) throws SQLException {
         // Clearing previous table and CB values
@@ -166,6 +191,10 @@ public class ReportsController implements Initializable {
 
     }
 
+    /**
+     * Clears the previous table and CB values and allows the user to sort customers by month from the CB
+     * @param event action on a radio button
+     */
     @FXML
     void sortMonth(ActionEvent event) {
         // Clearing previous table and CB values
@@ -182,6 +211,11 @@ public class ReportsController implements Initializable {
         universalCB.setItems(months);
     }
 
+    /**
+     * Clears the previous table and CB values and allows the user to sort by customer type from the CB
+     * @param event action on a radio button
+     * @throws SQLException catches RUNTIME ERROR
+     */
     @FXML
     void sortType(ActionEvent event) throws SQLException {
 
@@ -200,6 +234,11 @@ public class ReportsController implements Initializable {
 
     }
 
+    /**
+     * The drop down box that contains the elements to search by for each sort function
+     * @param event action on a CB
+     * @throws SQLException catches RUNTIME ERROR
+     */
     @FXML
     void universalDropDown(ActionEvent event) throws SQLException {
         ObservableList<String> months = FXCollections.observableArrayList("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
@@ -237,6 +276,11 @@ public class ReportsController implements Initializable {
         totalCustomersLbl.setText(String.valueOf(numRows));
     }
 
+    /**
+     *  Initializes the form and sets the initial values to sort by contact id
+     * @param url of the form
+     * @param resourceBundle bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ObservableList<String> contactIDs = null;

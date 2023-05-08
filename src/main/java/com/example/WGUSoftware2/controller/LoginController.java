@@ -55,9 +55,10 @@ public class LoginController implements Initializable {
 
     /**
      * Takes items from text fields and compares to element in the database and switches to the dashboard page if user
-     * passes.
+     * passes. Also logs the interaction with the login form to a txt file
      * @param event action on a button
      * @throws IOException catches RUNTIME ERROR
+     * @throws SQLException catches RUNTIME ERROR
      */
     public void handleLogin(ActionEvent event) throws IOException, SQLException {
         Locale userLocale = Locale.getDefault();
@@ -78,6 +79,11 @@ public class LoginController implements Initializable {
             errorLabel.setVisible(true);
         }
     }
+
+    /**
+     * Handles the language selected and switches language to either english or french
+     * @param event action on a combo box
+     */
     @FXML
     void languageHandler(ActionEvent event) {
         String selectedLanguage = languageDropDown.getSelectionModel().getSelectedItem();
@@ -85,6 +91,9 @@ public class LoginController implements Initializable {
         updateLanguage();
     }
 
+    /**
+     * Updates the to the language selected in the combo box
+     */
     void updateLanguage(){
         ResourceBundle resources = ResourceBundle.getBundle("com/example/WGUSoftware2/language_property/login", Locale.getDefault());
         errorLabel.setVisible(false);
@@ -105,6 +114,11 @@ public class LoginController implements Initializable {
         languageDropDown.getSelectionModel().selectFirst();
     }
 
+    /**
+     * Initializes the form and directs to the resources with the language compatibility
+     * @param location location
+     * @param resources resources from the language bundle
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         populateLanguageDropDown();

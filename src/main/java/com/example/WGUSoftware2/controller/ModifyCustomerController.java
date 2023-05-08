@@ -8,12 +8,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ModifyCustomerController implements Initializable {
@@ -46,7 +48,11 @@ public class ModifyCustomerController implements Initializable {
     @FXML
     void cancelHandler(ActionEvent event) throws IOException {
         // Pop up a confirmation to confirm if the user wants to go back
-        Library.switchScreen(event, Library.customersUrl);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "This will cancel any changes made, do you want to continue?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.isPresent() && result.get() == ButtonType.OK){
+            Library.switchScreen(event, Library.customersUrl);
+        }
     }
 
     /**
@@ -93,10 +99,20 @@ public class ModifyCustomerController implements Initializable {
         }
     }
 
+    /**
+     * Receives the selected customer from the customers page, and calls a function to set the customer fields.
+     * @param customer selected customer
+     * @throws SQLException catches RUNTIME ERROR
+     */
     public void sendCustomer(Customers customer) throws SQLException {
         Customers.setCustomerFields(customer, customerIdTxt, customerNameTxt, addressTxt, postalCodeTxt, phoneTxt, countryDropDown, divisionDropDown);
     }
 
+    /**
+     * Initializes the form and sets up combo boxes for countries and divisions
+     * @param url of the form
+     * @param resourceBundle bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ObservableList<String> countries = FXCollections.observableArrayList("Canada", "UK", "US");

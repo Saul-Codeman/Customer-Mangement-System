@@ -124,12 +124,22 @@ public class AppointmentsController implements Initializable {
         }
     }
 
+    /**
+     * Switches the user to the login page
+     * @param event button press
+     * @throws IOException catches RUNTIME ERROR
+     */
     @FXML
     void logoutHandler(ActionEvent event) throws IOException {
         // End session
         Library.switchScreen(event, Library.loginUrl);
     }
 
+    /**
+     * Switches user to reports page
+     * @param event button press
+     * @throws IOException catches RUNTIME ERROR
+     */
     @FXML
     void reportsHandler(ActionEvent event) throws IOException {
         Library.switchScreen(event, Library.reportsUrl);
@@ -139,6 +149,7 @@ public class AppointmentsController implements Initializable {
      * Takes the selected appointment and switches to modify appointment page.
      * @param event action on a button
      * @throws IOException catches RUNTIME ERROR
+     * @throws  SQLException catches RUNTIME ERROR
      */
     @FXML
     void modifyHandler(ActionEvent event) throws IOException, SQLException {
@@ -167,6 +178,7 @@ public class AppointmentsController implements Initializable {
     /**
      * Shows appointments by month.
      * @param event action on a radio button
+     * @throws SQLException catches RUNTIME ERROR
      */
     @FXML
     void sortMonth(ActionEvent event) throws SQLException {
@@ -176,6 +188,7 @@ public class AppointmentsController implements Initializable {
     /**
      * Shows appointments by week.
      * @param event action on a radio button
+     * @throws SQLException catches RUNTIME ERROR
      */
     @FXML
     void sortWeek(ActionEvent event) throws SQLException {

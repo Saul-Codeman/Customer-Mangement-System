@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.time.*;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AddAppointmentController implements Initializable {
@@ -59,6 +60,7 @@ public class AddAppointmentController implements Initializable {
      * Saves the items in the text fields to the database and catches errors on user input and goes to the next page.
      * @param event action on a button
      * @throws IOException catches RUNTIME ERROR
+     * @throws SQLException catches RUNTIME ERROR
      */
     @FXML
     void addHandler(ActionEvent event) throws IOException, SQLException {
@@ -195,9 +197,18 @@ public class AddAppointmentController implements Initializable {
     @FXML
     void cancelHandler(ActionEvent event) throws IOException {
         // Pop up confirmation box to confirm if the person wants to switch
-        Library.switchScreen(event, Library.appointmentsUrl);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "This will clear all text field values, do you want to continue?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.isPresent() && result.get() == ButtonType.OK){
+            Library.switchScreen(event, Library.appointmentsUrl);
+        }
     }
 
+    /**
+     * Initialize addappointment form and setup up the spinners to be used for times
+     * @param url of the current form
+     * @param resourceBundle bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -218,12 +229,20 @@ public class AddAppointmentController implements Initializable {
                     setWrapAround(true);
                 }
 
+                /**
+                 * decrements time spinner
+                 * @param steps increments of 15
+                 */
                 @Override
                 public void decrement(int steps) {
                     // Decrement the value by the specified number of steps
                     setValue(getValue().minusMinutes(steps * 15));
                 }
 
+                /**
+                 * increments time spinner
+                 * @param steps increments of 15
+                 */
                 @Override
                 public void increment(int steps) {
                     // Increment the value by the specified number of steps
@@ -240,12 +259,20 @@ public class AddAppointmentController implements Initializable {
                     setWrapAround(false);
                 }
 
+                /**
+                 * decrements time spinner
+                 * @param steps increments of 15
+                 */
                 @Override
                 public void decrement(int steps) {
                     // Decrement the value by the specified number of steps
                     setValue(getValue().minusMinutes(steps * 15));
                 }
 
+                /**
+                 * increments time spinner
+                 * @param steps increments of 15
+                 */
                 @Override
                 public void increment(int steps) {
                     // Increment the value by the specified number of steps

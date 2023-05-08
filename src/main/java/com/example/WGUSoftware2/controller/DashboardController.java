@@ -35,11 +35,21 @@ public class DashboardController implements Initializable {
         Library.switchScreen(event, Library.customersUrl);
     }
 
+    /**
+     * Switches to reports page
+     * @param event action on a button
+     * @throws IOException catches RUNTIME ERROR
+     */
     @FXML
     void reportsHandler(ActionEvent event) throws IOException {
         Library.switchScreen(event, Library.reportsUrl);
     }
 
+    /**
+     * Initializes page
+     * @param url of the form
+     * @param resourceBundle bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Library.checkUpcomingAppointments(upcomingAppointmentsLbl);
